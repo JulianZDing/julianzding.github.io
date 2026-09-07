@@ -22,6 +22,16 @@
   gap: 0.25rem 1.25rem;
 }
 
+.nav-link {
+  text-decoration: none;
+  font-weight: normal;
+  transition: font-weight 0.2s ease;
+}
+
+.nav-link.active {
+  font-weight: bold;
+}
+
 .site-title {
   font-size: 1.25rem;
   font-weight: 700;

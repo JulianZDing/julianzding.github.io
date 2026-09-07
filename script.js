@@ -1,3 +1,24 @@
+// Bold current page in header
+document.addEventListener("DOMContentLoaded", () => {
+  // 1. Get the current page URL path (e.g., "/about.html")
+  const currentPath = window.location.pathname;
+
+  // 2. Select all navigation links
+  const navLinks = document.querySelectorAll(".nav-link");
+
+  navLinks.forEach(link => {
+    // 3. Extract the href attribute from the link
+    const linkHref = link.getAttribute("href");
+
+    // 4. Check if the current URL ends with or includes this link's href
+    if (currentPath.endsWith(linkHref)) {
+      link.classList.add("active");
+    }
+  });
+});
+
+
+// Fade in reveal scrolling elements
 document.addEventListener("DOMContentLoaded", () => {
   // 1. Select all elements you want to reveal
   const revealElements = document.querySelectorAll(".reveal");
