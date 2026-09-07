@@ -1,0 +1,79 @@
+.container {
+  max-width: 1000px;
+}
+
+
+.site-header {
+  padding: 1.5rem 0 1rem;
+  border-bottom: 1px solid;
+  margin-bottom: 2rem;
+}
+
+.site-nav {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+}
+
+.nav-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+}
+
+.site-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-right: auto;
+}
+
+
+.profile-section {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+}
+
+.profile-img {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.profile-info {
+  flex: 1;
+
+}
+
+.profile-name {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.profile-titles {
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+}
+
+.blurb {
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+}
+
+
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+  will-change: opacity, transform; /* Optimizes browser rendering */
+}
+
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
