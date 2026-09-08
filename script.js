@@ -21,6 +21,46 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+// Scroll back up instead of reloading if clicking on the same page in header
+document.addEventListener("DOMContentLoaded", () => {
+  // 1. Select all links inside the header (logo + navigation links)
+  const headerLinks = document.querySelectorAll("header a");
+
+  headerLinks.forEach(link => {
+    link.addEventListener("click", (event) => {
+      // 2. Get the current URL path (e.g., "/my-project/page2.html")
+      const currentPath = window.location.pathname;
+      
+      // 3. Extract the target file name from the clicked link (e.g., "page2.html")
+      const targetHref = link.getAttribute("href");
+
+      // 4. Determine if the user is clicking a link to the page they are currently reading
+      let isSamePage = false;
+
+      // Handle homepage paths (catches root folder "/", "index.html", or repository names)
+      if (targetHref === "index.html" || targetHref === "/") {
+        const isAtRoot = currentPath.endsWith("/");
+        const isAtIndex = currentPath.endsWith("index.html");
+        if (isAtRoot || isAtIndex) isSamePage = true;
+      } 
+      // Handle all other standard pages (e.g., page2.html, about.html)
+      else if (currentPath.endsWith(targetHref)) {
+        isSamePage = true;
+      }
+
+      // 5. If it's the same page, intercept the click and scroll to top smoothly
+      if (isSamePage) {
+        event.preventDefault(); // ⚡ Stops the browser from reloading the page
+        
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth" // ⚡ Glides back to the top of the viewport
+        });
+      }
+    });
+  });
+});
+
 
 // Fade in reveal scrolling elements
 document.addEventListener("DOMContentLoaded", () => {

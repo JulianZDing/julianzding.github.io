@@ -18,6 +18,7 @@ permalink: /index.html
 {% include header.html %}
 
 <!--Content-->
+<main>
 <div class="container">
     <div class="profile-section">
         <img class="profile-img" src="assets/placeholder.png" alt="Photo of Julian Ding">
@@ -30,10 +31,21 @@ permalink: /index.html
                 <br>
                 <a href="https://www.utoronto.ca/">University of Toronto</a>
             </p>
+            <p class="profile-titles links">
+              <img class="site-icon" src="assets/email.webp" alt="Email Logo">
+              <a href="mailto:jding@cs.toronto.edu">jding@cs.toronto.edu</a>
+              <br>
+              <img class="site-icon" src="assets/linkedin.webp" alt="LinkedIn Logo">
+              <a href="https://www.linkedin.com/in/julianzding/">linkedin.com/in/julianzding</a>
+              <br>
+              <img class="site-icon" src="assets/github.png" alt="GitHub Logo">
+              <a href="https://github.com/JulianZDing">JulianZDing</a>
+            </p>
+            
         </div>
     </div>
     <div class="blurb">
-        <p>Hello world! This is a placeholder blurb for now, I'll update it for real later.</p>
+        <p>This is a placeholder blurb for now, I'll update it for real later.</p>
         <p>Here's another paragraph for good measure.</p>
     </div>
 </div>
@@ -100,8 +112,10 @@ permalink: /index.html
   </div>
 
 </div>
+</main>
 
 <!--Footer-->
+{% include footer.html %}
 
 </body>
 </html>
