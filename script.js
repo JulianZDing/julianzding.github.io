@@ -13,6 +13,10 @@ document.addEventListener("DOMContentLoaded", () => {
     // 4. Check if the current URL ends with or includes this link's href
     if (currentPath.endsWith(linkHref)) {
       link.classList.add("active");
+    } 
+    // Fallback: If path is just "/" (homepage root), highlight the home link
+    else if (currentPath === "/" && linkHref === "index.html") {
+      link.classList.add("active");
     }
   });
 });
