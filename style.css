@@ -14,6 +14,7 @@
   --max-width: 1000px;
   --timeline-width: 0.7rem;
   --timeline-left-padding: 35%;
+  --timeline-stem-overrun: -3rem;
   --timeline-point-width: 1.8rem;
   --timeline-content-padding: 1rem;
   --timeline-grad-length: 4rem;
@@ -167,12 +168,12 @@ main {
   margin: 4rem auto;
 }
 
-.container.timeline::before {
+.container.timeline.root::before {
   content: '';
   position: absolute;
   left: var(--timeline-left-padding);
-  top: 0;
-  bottom: 0;
+  top: var(--timeline-stem-overrun);
+  bottom: var(--timeline-stem-overrun);
   width: var(--timeline-width);
   background: linear-gradient(
     to bottom, 
@@ -184,7 +185,7 @@ main {
   z-index: 1;
 }
 
-.container.timeline::after {
+.container.timeline.root::after {
   content: '';
   position: fixed;
   bottom: 0;
@@ -203,13 +204,12 @@ main {
 .timeline-point {
   position: absolute;
   top: calc(var(--timeline-content-padding) + var(--timeline-point-width) / 2);
-  width: var(--timeline-point-width);
-  height: var(--timeline-point-width);
   background: var(--colour-timeline);
   z-index: 1;
 }
 
-.timeline-point.right {
+.timeline-point.right {width: var(--timeline-point-width);
+  height: var(--timeline-point-width);
   left: calc(0.5px + var(--timeline-point-width) / 2 * -1);
   border-radius: 50%;
 }
@@ -219,8 +219,6 @@ main {
   position: relative;
   margin-right: var(--timeline-point-width);
   padding: var(--timeline-content-padding) var(--timeline-content-padding) var(--timeline-content-padding) var(--timeline-content-padding);
-  border-radius: var(--rounding-radius);
-  box-shadow: 10px 10px 10px -5px var(--colour-shadow);
 }
 
 .timeline-event.era {
@@ -231,29 +229,32 @@ main {
   margin-left: var(--timeline-point-width);
   margin-right: 0;
   background: #ffffff;
+  border-radius: var(--rounding-radius);
+  box-shadow: 10px 10px 10px -5px var(--colour-shadow);
 }
 
 .timeline-era {
   position: relative;
   display: grid;
   grid-template-columns: var(--timeline-left-padding) auto;
-  padding: var(--timeline-content-padding) var(--timeline-content-padding) var(--timeline-content-padding) var(--timeline-content-padding);
-  background: var(--colour-start);
+  padding-left: var(--timeline-content-padding);
+  padding-right: var(--timeline-content-padding);
 }
 
 .timeline-era-label {
   position: sticky;
+  top: 0;
 }
 
 .timeline-point.era-start {
-  top: 0;
+  top: auto;
   bottom: calc(var(--timeline-content-padding) + var(--timeline-point-width) / 2);
 }
 
 .timeline-point.era-end, .timeline-point.era-start {
-  left: calc(
-    var(--timeline-left-padding) - (var(--timeline-point-width) / 2) + (var(--timeline-width) / 2)
-  );
+  width: var(--timeline-point-width);
+  height: calc(var(--timeline-point-width) / 2);
+  left: calc(var(--timeline-left-padding) - var(--timeline-point-width) + (var(--timeline-width) / 2));
 }
 
 /* Dynamic elements */
