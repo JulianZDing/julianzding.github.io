@@ -202,9 +202,6 @@ main {
 
 .timeline-point {
   position: absolute;
-  left: calc(
-    var(--timeline-left-padding) - (var(--timeline-point-width) / 2) + (var(--timeline-width) / 2)
-  );
   top: calc(var(--timeline-content-padding) + var(--timeline-point-width) / 2);
   width: var(--timeline-point-width);
   height: var(--timeline-point-width);
@@ -212,40 +209,51 @@ main {
   z-index: 1;
 }
 
-.timeline-point.circle {
+.timeline-point.right {
+  left: calc(0.5px + var(--timeline-point-width) / 2 * -1);
   border-radius: 50%;
-  border: 0px;
 }
 
-.timeline-point.triangle {
-  clip-path: polygon(0% 0%, 100% 50%, 0% 100%);
-}
-
-.timeline-content {
+.timeline-event {
   display: inline-block;
   position: relative;
-  margin-right: calc(
-    100% - var(--timeline-left-padding) + var(--timeline-point-width)
-  );
-  padding: var(--timeline-content-padding) var(--timeline-content-padding);
+  margin-right: var(--timeline-point-width);
+  padding: var(--timeline-content-padding) var(--timeline-content-padding) var(--timeline-content-padding) var(--timeline-content-padding);
   border-radius: var(--rounding-radius);
   box-shadow: 10px 10px 10px -5px var(--colour-shadow);
 }
 
-.timeline-content.right {
-  margin-right: 0;
-  margin-left: calc(
-    var(--timeline-left-padding) + var(--timeline-width) + var(--timeline-point-width)
-  );
-  background: #ffffff;
-}
-
-.timeline-content.start {
+.timeline-event.era {
   background: var(--colour-start);
 }
 
-.timeline-content.stop {
-  background: var(--colour-stop);
+.timeline-event.right {
+  margin-left: var(--timeline-point-width);
+  margin-right: 0;
+  background: #ffffff;
+}
+
+.timeline-era {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--timeline-left-padding) auto;
+  padding: var(--timeline-content-padding) var(--timeline-content-padding) var(--timeline-content-padding) var(--timeline-content-padding);
+  background: var(--colour-start);
+}
+
+.timeline-era-label {
+  position: sticky;
+}
+
+.timeline-point.era-start {
+  top: 0;
+  bottom: calc(var(--timeline-content-padding) + var(--timeline-point-width) / 2);
+}
+
+.timeline-point.era-end, .timeline-point.era-start {
+  left: calc(
+    var(--timeline-left-padding) - (var(--timeline-point-width) / 2) + (var(--timeline-width) / 2)
+  );
 }
 
 /* Dynamic elements */
