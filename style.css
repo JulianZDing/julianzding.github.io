@@ -5,9 +5,10 @@
     --colour-uoft: #1e3765;
     --colour-link: #31579e;
     --colour-timeline: #444;
-    --colour-shadow: rgba(0,0,0,0.1);
-    --colour-start: #4df77a;
-    --colour-stop: #f78959;
+    --colour-shadow: rgba(0,0,0,0.2);
+    --colour-academia: #b6d6ff;
+    --colour-industry: #4df77a;
+    --colour-subevent: #ddd;
     --font-main: "Source Sans 3", "Helvetica Neue", sans-serif;
     --font-size-small: 0.875rem;
     --font-size-smaller: 0.8rem;
@@ -249,39 +250,28 @@ main {
     position: relative;
     left: calc(-1 * var(--timeline-stem-padding));
     margin-right: calc(var(--timeline-point-width) / 2);
-    padding: 0 var(--timeline-content-padding) var(--timeline-content-padding) var(--timeline-content-padding);
-    background: var(--colour-start);
+    padding: 0 var(--timeline-content-padding) var(--timeline-content-padding);
     box-shadow: inset 0 -5px 5px -2px var(--colour-shadow);
+    border-radius: var(--rounding-radius);
     font-size: var(--font-size-small);
+    text-decoration: none;
+    color: inherit;
 }
 
 .timeline-event.uoft {
     background: linear-gradient(
         to top,
-        var(--colour-start) 30%,
+        var(--colour-academia) 30%,
         transparent 100%
     );
-    border-radius: 0 0 var(--rounding-radius) var(--rounding-radius)
 }
 
-.timeline-event.demonware {
-    border-radius: var(--rounding-radius);
+.timeline-event.industry {
+    background: var(--colour-industry);
 }
 
-.timeline-event.ubc {
-    border-radius: var(--rounding-radius);
-}
-
-.timeline-event.left {
-    float: right;
-    font-size: var(--font-size-smaller);
-    left: calc(-1 * 100% - var(--timeline-content-padding) - var(--timeline-stem-padding));
-    /* NOTE: must match left/right ratio for timeline placement */
-    max-width: calc(1.25 * var(--timeline-left-padding) - var(--timeline-content-padding) * 3);
-    background: #ffffffdd;
-    border-radius: var(--rounding-radius);
-    border: 1px solid #ffffff;
-    box-shadow: 10px 10px 10px -5px var(--colour-shadow);
+.timeline-event.academic {
+    background: var(--colour-academia);
 }
 
 .timeline-event.right {
@@ -289,8 +279,28 @@ main {
     margin-right: 0;
     left: calc(var(--timeline-content-padding) / 2);
     background: #ffffff;
-    border-radius: var(--rounding-radius);
+}
+
+.timeline-event.right.small {
+    font-size: var(--font-size-smaller);
+}
+
+.timeline-event.right.link, .timeline-event.right.small.link {
     box-shadow: 10px 10px 10px -5px var(--colour-shadow);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.timeline-event.right.link:hover, .timeline-event.right.small.link:hover {
+    transform: translateY(-5px);
+    box-shadow: 10px 10px 10px -2px var(--colour-shadow);
+}
+
+.timeline-event.right.small.academic, .timeline-event.right.small.link.academic {
+    background: var(--colour-academia);
+}
+
+.timeline-event.right.small.industry, .timeline-event.right.small.link.industry {
+    background: var(--colour-industry);
 }
 
 /* Dynamic elements */
