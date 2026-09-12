@@ -9,15 +9,19 @@
     --colour-start: #4df77a;
     --colour-stop: #f78959;
     --font-main: "Source Sans 3", "Helvetica Neue", sans-serif;
+    --font-size-small: 0.875rem;
+    --font-size-smaller: 0.8rem;
     --photo-size: 13rem;
     --rounding-radius: 0.5rem;
     --max-width: 1000px;
     --timeline-width: 0.7rem;
     --timeline-left-padding: 35%;
-    --timeline-stem-overrun: -3rem;
-    --timeline-point-width: 1.8rem;
+    --timeline-stem-overrun: -2rem;
+    --timeline-point-width: 1.5rem;
+    --timeline-stem-padding: 0.5rem;
     --timeline-content-padding: 1rem;
     --timeline-grad-length: 4rem;
+    --top-buffer: 5rem;
     --footer-grad-length: 15vh;
 }
 
@@ -30,6 +34,9 @@ body {
 }
 
 main {
+    padding-left: 20px;
+    padding-right: 20px;
+    box-sizing: border-box;
     animation: pageFadeIn 0.3s ease-out forwards;
 }
 
@@ -58,7 +65,8 @@ main {
     width: 100%;
     background-color: var(--colour-header);
     box-shadow: 0 2px 10px var(--colour-shadow);
-    padding: 1.5rem 0 1rem;
+    padding: 1.5rem 20px 1rem;
+    box-sizing: border-box;
     margin-bottom: 2rem;
     z-index: 1000;
 }
@@ -106,7 +114,8 @@ main {
     position: relative;
     width: 100%;
     margin-top: 4rem;
-    padding: 1.5rem 0 1rem;
+    padding: 1.5rem 20px 1rem;
+    box-sizing: border-box;
     opacity: 0.3;
     text-align: right;
     z-index: 1000;
@@ -140,7 +149,7 @@ main {
 }
 
 .profile-titles {
-    font-size: 0.875rem;
+    font-size: var(--font-size-small);
     margin-bottom: 0.5rem;
 }
 
@@ -205,31 +214,45 @@ main {
     z-index: 10;
 }
 
+.timeline-era {
+    position: relative;
+    display: grid;
+    grid-template-columns: var(--timeline-left-padding) auto;
+}
+
+.timeline-era-label {
+    position: sticky;
+    top: var(--top-buffer);
+    font-size: var(--font-size-small);
+}
+
 .timeline-point {
-    position: absolute;
-    top: calc(var(--timeline-content-padding) + var(--timeline-point-width) / 2);
+    position: relative;
+    top: calc(1.5 * var(--timeline-point-width));
+    left: calc((var(--timeline-width) - var(--timeline-point-width)) / 2 - 0.5px);
     width: var(--timeline-point-width);
     height: var(--timeline-point-width);
     background: var(--colour-timeline);
     z-index: 1;
 }
 
-.timeline-point.left {
-    right: calc(1px - 2 * var(--timeline-content-padding) - var(--timeline-point-width));
+.timeline-point.line {
+    height: calc(var(--timeline-point-width) / 3);
 } 
 
-.timeline-point.right {
-    left: calc(0.5px + var(--timeline-point-width) / 2 * -1);
+.timeline-point.circle {
     border-radius: 50%;
 }
 
 .timeline-event {
     display: inline-block;
     position: relative;
-    margin-right: var(--timeline-point-width);
-    padding: var(--timeline-content-padding) var(--timeline-content-padding) var(--timeline-content-padding) var(--timeline-content-padding);
+    left: calc(-1 * var(--timeline-stem-padding));
+    margin-right: calc(var(--timeline-point-width) / 2);
+    padding: 0 var(--timeline-content-padding) var(--timeline-content-padding) var(--timeline-content-padding);
     background: var(--colour-start);
     box-shadow: inset 0 -5px 5px -2px var(--colour-shadow);
+    font-size: var(--font-size-small);
 }
 
 .timeline-event.uoft {
@@ -250,30 +273,24 @@ main {
 }
 
 .timeline-event.left {
-    background: #ffffff;
+    float: right;
+    font-size: var(--font-size-smaller);
+    left: calc(-1 * 100% - var(--timeline-content-padding) - var(--timeline-stem-padding));
+    /* NOTE: must match left/right ratio for timeline placement */
+    max-width: calc(1.25 * var(--timeline-left-padding) - var(--timeline-content-padding) * 3);
+    background: #ffffffdd;
     border-radius: var(--rounding-radius);
+    border: 1px solid #ffffff;
     box-shadow: 10px 10px 10px -5px var(--colour-shadow);
 }
 
 .timeline-event.right {
-    margin-left: var(--timeline-point-width);
+    margin-left: calc(var(--timeline-width) + var(--timeline-point-width) / 2);
     margin-right: 0;
+    left: calc(var(--timeline-content-padding) / 2);
     background: #ffffff;
     border-radius: var(--rounding-radius);
     box-shadow: 10px 10px 10px -5px var(--colour-shadow);
-}
-
-.timeline-era {
-    position: relative;
-    display: grid;
-    grid-template-columns: var(--timeline-left-padding) auto;
-    padding-left: var(--timeline-content-padding);
-    padding-right: var(--timeline-content-padding);
-}
-
-.timeline-era-label {
-    position: sticky;
-    top: 0;
 }
 
 /* Dynamic elements */
