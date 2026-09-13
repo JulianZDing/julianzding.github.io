@@ -258,6 +258,18 @@ main {
     position: sticky;
     top: var(--top-buffer);
     font-size: var(--font-size-small);
+    margin-bottom: auto;
+}
+
+.timeline-era-img {
+    opacity: 0.5;
+    max-height: 10rem;
+    width: 85%;
+    object-fit: contain;
+    object-position: right;
+    align-self: flex-end;
+    margin-top: var(--timeline-content-padding);
+    pointer-events: none;
 }
 
 .timeline-point {
@@ -281,7 +293,8 @@ main {
 }
 
 .timeline-event {
-    display: inline-block;
+    display: flex;
+    flex-direction: column;
     position: relative;
     left: calc(-1 * var(--timeline-stem-padding));
     margin-right: calc(var(--timeline-point-width) / 2);
@@ -320,6 +333,7 @@ main {
 }
 
 .timeline-event.right {
+    display: inline-block;
     margin-left: calc(var(--timeline-width) + var(--timeline-point-width) / 2);
     margin-right: 0;
     left: calc(var(--timeline-content-padding) / 2);
