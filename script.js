@@ -93,3 +93,24 @@ document.addEventListener("DOMContentLoaded", () => {
     revealObserver.observe(element);
   });
 });
+
+// Adjust viewport scale if screen is too narrow
+function adjustViewport() {
+  const minWidth = 360; // Minimum width before resizing
+  const screenWidth = window.screen.width;
+  const viewportMeta = document.getElementById('viewport');
+
+  // Prevent errors if the viewport element is missing
+  if (!viewportMeta) return; 
+
+  if (screenWidth < minWidth) {
+    const scale = screenWidth / minWidth;
+    viewportMeta.setAttribute('content', `width=${minWidth}, initial-scale=${scale}, maximum-scale=${scale}, user-scalable=no`);
+  } else {
+    viewportMeta.setAttribute('content', 'width=device-width, initial-scale=1.0');
+  }
+}
+
+// Run the script on window resize and initial load
+window.addEventListener('resize', adjustViewport);
+window.addEventListener('DOMContentLoaded', adjustViewport);
