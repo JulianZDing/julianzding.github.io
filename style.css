@@ -407,6 +407,7 @@ main {
     border-style: solid;
     border-color: #ffffff;
     border-width: 1px;
+    opacity: 0.95;
     z-index: 10;
 }
 
