@@ -29,6 +29,14 @@
     --event-min-width: calc(var(--timeline-left-padding) - 100px);
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
+html, body {
+    overflow-x: clip;
+}
+
 body {
     margin: 0;
     padding: 0;
@@ -103,7 +111,7 @@ main {
     font-weight: normal;
 }
 
-.nav-link.active {
+.about-page .nav-link.about {
     text-shadow: 1px 0 0 currentColor, 0.5px 0 0 currentColor, 0.5px 0 0 currentColor;
 }
 
@@ -359,6 +367,9 @@ main {
     display: inline-flex;
     flex-direction: column;
     justify-content: flex-end;
+    padding-top: 0;
+    padding-bottom: 0;
+    transition: padding-top 0.3s ease, padding-bottom 0.3s ease;
 }
 
 .timeline-event.right {
