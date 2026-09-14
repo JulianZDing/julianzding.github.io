@@ -15,18 +15,37 @@
     --font-size-smaller: 0.8rem;
     --photo-size: 14rem;
     --rounding-radius: 0.5rem;
-    --max-width: 1000px;
+    --max-width: 63rem;
     --timeline-width: 0.7rem;
-    --timeline-left-padding: 350px;
     --timeline-stem-overrun: -2rem;
     --timeline-point-width: 1.5rem;
     --timeline-stem-padding: 0.5rem;
     --timeline-content-padding: 1rem;
     --timeline-grad-length: 4rem;
+    --timeline-left-padding: min(
+        21rem,
+        calc(
+            100vw
+            - var(--timeline-width)
+            - var(--timeline-stem-padding)
+            - var(--timeline-point-width)
+        )
+    );
     --top-buffer: 5rem;
     --footer-grad-length: 6vh;
-    --teaser-img-height: 250px;
-    --event-min-width: calc(var(--timeline-left-padding) - 100px);
+    --teaser-img-height: 15rem;
+    --event-min-width: calc(var(--timeline-left-padding) - 3rem);
+    --event-shift-left: min(
+        0px,
+        calc(
+            100vw - 4rem
+            - 2rem
+            - var(--timeline-width)
+            - var(--timeline-left-padding)
+            - var(--event-min-width)
+            - 2 * var(--timeline-stem-padding)
+        )
+    );
 }
 
 html {
@@ -181,6 +200,7 @@ main {
 
 .profile-info {
     flex: 1;
+    min-width: var(--photo-size);
 }
 
 .profile-name {
@@ -305,7 +325,8 @@ main {
 .timeline-point {
     position: relative;
     top: calc(var(--timeline-content-padding) + var(--timeline-point-width));
-    left: calc((var(--timeline-width) - var(--timeline-point-width)) / 2 - 0.5px);
+    left: calc(-1 * var(--event-shift-left));
+    margin-left: calc((var(--timeline-width) - var(--timeline-point-width)) / 2 - 0.5px);
     width: var(--timeline-point-width);
     height: var(--timeline-point-width);
     background: var(--colour-timeline);
@@ -313,6 +334,8 @@ main {
 }
 
 .timeline-point.line {
+    left: calc(-0.962 * var(--event-shift-left));
+    margin-left: 0;
     top: calc(var(--timeline-content-padding) + 2 * var(--timeline-point-width) / 3);
     height: calc(var(--timeline-point-width) / 3);
 } 
@@ -367,8 +390,10 @@ main {
     display: inline-flex;
     flex-direction: column;
     justify-content: flex-end;
+    position: relative;
     padding-top: 0;
     padding-bottom: 0;
+    left: var(--event-shift-left);
     transition: padding-top 0.3s ease, padding-bottom 0.3s ease;
 }
 
@@ -377,17 +402,7 @@ main {
     margin-left: calc(var(--timeline-width) + var(--timeline-point-width) / 2);
     margin-right: 0;
     min-width: var(--event-min-width);
-    left: min(
-        calc(var(--timeline-content-padding) / 2),
-        calc(
-            100vw
-            - 2rem
-            - var(--timeline-width)
-            - var(--timeline-left-padding)
-            - var(--event-min-width)
-            - 2 * (var(--timeline-stem-padding) + var(--timeline-content-padding))
-        )
-    );
+    left: calc(var(--timeline-content-padding) / 2);
     background: #ffffff;
     border-style: solid;
     border-color: #ffffff;
@@ -425,7 +440,7 @@ main {
 
 .reveal {
     opacity: 0;
-    transform: translateY(50px);
+    transform: translateY(3rem);
     transition: opacity 0.5s ease-out, transform 0.5s ease-out;
     will-change: opacity, transform;
 }
@@ -436,13 +451,13 @@ main {
 }
 
 /* NOTE: can't use variables here, so need to update manually */
-@media (max-width: 650px) {
+@media (max-width: 41rem) {
     .timeline-era-label {
         position: relative;
         top: 0;
     }
     .timeline-event-right-container {
-        padding-top: 13rem;
-        padding-bottom: 200px;
+        padding-top: var(--dynamic-padding-top, 13rem);
+        padding-bottom: var(--dynamic-padding-bottom, 12rem);
     }
 }
