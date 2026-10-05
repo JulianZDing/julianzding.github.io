@@ -1,0 +1,103 @@
+:root {
+    --colour-bg: #111;
+    --colour-text: #eee;
+    --font-main: Trebuchet MS, Tahoma, Arial, sans-serif;
+    --font-size-footer: 0.8rem;
+    --max-width: 52rem;
+    --body-padding: 1.25rem;
+    --time-delay-between: 0.7s;
+    --time-page-fade: 0.5s;
+    --time-desc-fade: 1s;
+    --time-tree-fade: 0.8s;
+    --bg-img-left-padding: -6rem;
+    --bg-min-height: 30rem;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+body {
+    box-sizing: border-box;
+    padding: var(--body-padding);
+    background-color: var(--colour-bg);
+    color: var(--colour-text);
+    font-family: var(--font-main);
+    line-height: 1.35;
+}
+
+.page {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    animation: fadeIn var(--time-page-fade) ease-out forwards;
+}
+
+.title {
+    opacity: 0;
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    animation: fadeIn var(--time-desc-fade) ease forwards var(--time-delay-between);
+}
+
+.desc {
+    opacity: 0;
+    animation: fadeIn var(--time-desc-fade) ease forwards calc(var(--time-desc-fade) + 2 * var(--time-delay-between));
+}
+
+.desc.delay {
+    animation-delay: calc(2 * var(--time-desc-fade) + 3 * var(--time-delay-between));
+}
+
+.site-footer {
+    display: flex;
+    justify-content: center;
+}
+
+.text-footer {
+    text-decoration: none;
+    color: inherit;
+    font-weight: normal;
+    font-size: var(--font-size-smaller);
+}
+
+.container.background {
+    flex: 1;
+    display: flex;
+    align-items: flex-start;
+    min-height: var(--bg-min-height);
+}
+
+.background-img {
+    position: relative;
+    left: max(
+        min(
+            calc((var(--max-width) - 100vw) / 2),
+            calc(0rem - var(--body-padding))
+        ),
+        var(--bg-img-left-padding)
+    );
+    max-width: 75%;
+    max-height: 100%;
+    object-fit: contain;
+    pointer-events: none;
+    z-index: -1;
+}

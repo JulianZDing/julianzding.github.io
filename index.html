@@ -5,7 +5,16 @@ permalink: /index.html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    {% include shared_head.html %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="index.css">
+    <script src="index.js" defer></script>
+
+    <!-- Open Graph / Facebook / Slack / Discord -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Julian Ding">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="theme-color" content="#eaf4fa">
 
     <title>Julian Ding</title>
     <meta name="description" content="Personal website of Julian Ding.">
@@ -23,7 +32,20 @@ permalink: /index.html
 <body class="about-page">
 
 <!--Header-->
-{% include header.html %}
+<header class="site-header">
+    <div class="container">
+        <nav class="site-nav">
+            <a class="site-title" href="index.html#">Julian Ding</a>
+            <span class="nav-links">
+                <a class="nav-link about" href="index.html#">about</a>
+                <a class="nav-link" href="https://scholar.google.com/citations?user=0_nakFwAAAAJ" target="_blank">publications</a>
+                <a class="nav-link" href="assets/cv.pdf" target="_blank">cv</a>
+                |
+                <a class="nav-link" href="photography.html">photography</a>
+            </span>
+        </nav>
+    </div>
+</header>
 
 <!--Content-->
 <main>
@@ -417,7 +439,16 @@ permalink: /index.html
 </main>
 
 <!--Footer-->
-{% include footer.html %}
+<footer class="site-footer">
+    <div class="container footer">
+        <div class="footer-item left">Last updated {{ site.time | date: "%B %d, %Y" }}</div>
+        <div class="footer-item">&copy; Julian Ding</div>
+        <a class="footer-item right" href="https://github.com/JulianZDing/julianzding.github.io">
+            Hosted on GitHub Pages 
+            <img class="site-icon" src="assets/github.png" alt="GitHub Logo">
+        </a>
+    </div>
+</footer>
 
 </body>
 </html>
