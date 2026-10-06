@@ -18,8 +18,21 @@ function clamp(value, min, max) {
     return Math.max(min, Math.min(max, value));
 }
 
-function interp(a, b, t) {
-    return a + (b - a) * t;
+const linear = t => t;
+
+const easeInCubic = t =>
+    t * t * t;
+
+const easeOutCubic = t =>
+    1 - Math.pow(1 - t, 3);
+
+const easeInOutCubic = t =>
+    t < 0.5
+        ? 4 * t * t * t
+        : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+function interp(a, b, t, ease) {
+    return a + (b - a) * ease(t);
 }
 
 const triggers = document.querySelectorAll('.photo-trigger');
@@ -31,7 +44,7 @@ triggers.forEach((_, index) => {
         xInit: clamp(gaussianRandom(0, 0.1), -0.3, 0.3) - 0.27,
         xFinal: clamp(gaussianRandom(0, 0.2), -0.4, 0.4) - 0.15,
         yInit: 0.8 + Math.random() * 0.1,
-        yFinal: 0.16,
+        yFinal: 0.16 + Math.random() * 0.002,
         rotateXFinal: 72,
         rotateZInit: -rotationDir * 1,
         rotateZ: rotationDir * 1,
@@ -76,26 +89,26 @@ function update() {
         const yFinal = -pos.yFinal * imgRect.height;
 
         if (p3 > 0) {
-            x = interp(xPhoto, xFinal, p3);
-            y = interp(yPhoto, yFinal, p3);
-            z = interp(0, -20, p3);
-            rotateX = interp(0, pos.rotateXFinal, p3);
-            rotateZ = interp(pos.rotateZ, pos.rotateZFinal, p3);
-            scale = interp(1, cardScale, p3)
+            x = interp(xPhoto, xFinal, p3, easeInOutCubic);
+            y = interp(yPhoto, yFinal, p3, easeInOutCubic);
+            z = interp(0, -20, p3, easeInOutCubic);
+            rotateX = interp(0, pos.rotateXFinal, p3, easeInOutCubic);
+            rotateZ = interp(pos.rotateZ, pos.rotateZFinal, p3, easeInOutCubic);
+            scale = interp(1, cardScale, p3, easeInOutCubic)
         } else if (p2 > 0) {
             x = xPhoto;
             y = yPhoto;
             z = 0;
             rotateX = 0;
-            rotateZ = interp(pos.rotateZInit, pos.rotateZ, p2);
+            rotateZ = interp(pos.rotateZInit, pos.rotateZ, p2, linear);
             scale = 1
         } else {
-            x = interp(xInit, xPhoto, p1);
-            y = interp(yInit, yPhoto, p1);
+            x = interp(xInit, xPhoto, p1, easeOutCubic);
+            y = interp(yInit, yPhoto, p1, easeOutCubic);
             z = 0
-            rotateX = interp(-180, 0, p1);
+            rotateX = interp(-180, 0, p1, easeOutCubic);
             rotateZ = pos.rotateZInit;
-            scale = interp(cardScale, 1, p1)
+            scale = interp(cardScale, 1, p1, easeOutCubic)
         }
 
         photo.style.transform = `

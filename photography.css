@@ -138,5 +138,6 @@ body {
     display: block;
     height: 25vh;
     border: 1rem solid white;
+    outline: 2px solid black;
     box-sizing: border-box;
 }
