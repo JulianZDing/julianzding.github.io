@@ -126,10 +126,9 @@ body {
 
 .photo {
     position: absolute;
-    left: 35%;
-    top: 40%;
-    height: 25%;
-    transform-origin: center bottom;
+    left: 0;
+    top: 0;
+    transform-origin: center;
     transform-style: preserve-3d;
     opacity: 0;
     will-change: transform, opacity;
