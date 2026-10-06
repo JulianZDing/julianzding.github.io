@@ -10,7 +10,7 @@ permalink: /photography.html
     <link rel="stylesheet" href="photography.css">
     <script src="photography.js" defer></script>
 
-    <title>peering through the triangle</title>
+    <title>a leaf in the breeze</title>
     <meta name="description" content="The photography of Julian Ding.">
     <link rel="canonical" href="https://juliand.ing/photography">
     <link rel="icon" href="photos/favicon.svg" type="image/svg+xml">
@@ -31,25 +31,51 @@ permalink: /photography.html
 
 <body>
 
-<div class="page">
+<div class="page-fixed">
     <div class="container">
-        <div class="title">peering through the triangle &#9660</div>
+        <div class="title">a leaf in the breeze</div>
         <p class="desc">
-            A camera does not see.<br>
-            A camera is a fountain pen.
+            The moment is a fleeting thing.<br>
+            To capture it in a photograph is to try to bottle the universe.
         </p>
         <p class="desc delay">
-            A photograph is a poem waiting to be interpreted.
+            It's a lot of fun to try.
         </p>
     </div>
     
     <div class="container background">
         <img class="background-img" src="photos/tree.svg" alt="tree with photos for leaves"/>
+        <div class="photo-pile">
+            <div id="photo-1" class="photo">
+                <img src="photos/assets/DSCN3350.JPG"/>
+            </div>
+            <div id="photo-2" class="photo">
+                <img src="photos/assets/IMGP3155.JPG"/>
+            </div>
+            <div id="photo-3" class="photo">
+                <img src="photos/assets/IMGP3306.JPG"/>
+            </div>
+            <div id="photo-4" class="photo">
+                <img src="photos/assets/IMGP3309.JPG"/>
+            </div>
+            <div id="photo-5" class="photo">
+                <img src="photos/assets/P9021732.JPG"/>
+            </div>
+        </div>
     </div>
 
     <footer class="site-footer">
         <a class="text-footer" href="index.html#">&copy; Julian Ding</a>
     </footer>
+</div>
+
+<div class="scroll-track">
+    <div class="photo-spacer"></div>
+    <div class="photo-trigger" data-photo="photo-1"></div>
+    <div class="photo-trigger" data-photo="photo-2"></div>
+    <div class="photo-trigger" data-photo="photo-3"></div>
+    <div class="photo-trigger" data-photo="photo-4"></div>
+    <div class="photo-trigger" data-photo="photo-5"></div>
 </div>
 </body>
 </html>
