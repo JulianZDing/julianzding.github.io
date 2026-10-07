@@ -210,7 +210,7 @@ body {
 .photo-desc {
     grid-area: 1 / 1;
     margin-left: 25%;
-    padding-top: 25%;
+    padding-top: 28%;
     z-index: 3;
     text-shadow:
         0 0 0.1em var(--colour-bg),

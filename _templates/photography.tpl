@@ -183,7 +183,7 @@ permalink: /photography.html
         </svg>
 
         <div class="photo-pile">
-            $PHOTO_PILE_ITEMS
+            {PHOTO_PILE_ITEMS}
         </div>
     </div>
 
@@ -194,7 +194,7 @@ permalink: /photography.html
 
 <div class="scroll-track">
     <div class="photo-spacer"></div>
-    $SCROLL_TRACK_ITEMS
+    {SCROLL_TRACK_ITEMS}
 </div>
 </body>
 </html>

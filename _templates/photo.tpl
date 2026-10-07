@@ -1,5 +1,5 @@
 ---
-permalink: /photos/$PHOTO_ID
+permalink: /photos/{PHOTO_ID}
 ---
 
 <!DOCTYPE html>
@@ -9,25 +9,25 @@ permalink: /photos/$PHOTO_ID
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../photography.css">
 
-    <title>TITLE</title>
-    <link rel="canonical" href="https://juliand.ing/photos/$PHOTO_ID">
+    <title>{TITLE}</title>
+    <link rel="canonical" href="https://juliand.ing/photos/{PHOTO_ID}">
 
     <!-- Open Graph / Facebook / Slack / Discord -->
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Julian Ding | Photography">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="theme-color" content="#eaf4fa">
-    <meta property="og:title" content="$TITLE">
-    <meta property="og:url" content="https://juliand.ing/photos/$PHOTO_ID">
-    <meta property="og:image" content="$PAGE_TEASER">
-    <meta property="og:image:width" content="$TEASER_WIDTH">
-    <meta property="og:image:height" content="$TEASER_HEIGHT">
+    <meta property="og:title" content="{TITLE}">
+    <meta property="og:url" content="https://juliand.ing/photos/{PHOTO_ID}">
+    <meta property="og:image" content="https://juliand.ing/photos/thumbnails/{THUMB_FILE}">
+    <meta property="og:image:width" content="{THUMB_WIDTH}">
+    <meta property="og:image:height" content="{THUMB_HEIGHT}">
 </head>
 
 <body>
 
 <div class="photo-page">
-    <div class="container photo-large"><img src="assets/$PHOTO_FILE"/></div>
+    <div class="container photo-large"><img src="assets/{PHOTO_FILE}"/></div>
     <div class="container grid">
         <svg 
             class="tree small"
@@ -169,8 +169,8 @@ permalink: /photos/$PHOTO_ID
             </a>
         </svg>
         <div class="container photo-desc">
-            <div class="photo-title">$TITLE</div>
-            $LONG_DESC
+            <div class="photo-title">{TITLE}</div>
+            {LONG_DESC}
         </div>
     </div>
     <footer class="site-footer">
