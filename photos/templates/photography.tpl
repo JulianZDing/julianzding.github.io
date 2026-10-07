@@ -1,0 +1,200 @@
+---
+permalink: /photography.html
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="photography.css">
+    <script src="photography.js" defer></script>
+
+    <title>a leaf in the breeze</title>
+    <meta name="description" content="The photography of Julian Ding.">
+    <link rel="canonical" href="https://juliand.ing/photography">
+    <link rel="icon" href="photos/favicon.svg" type="image/svg+xml">
+
+    <!-- Open Graph / Facebook / Slack / Discord -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Julian Ding | Photography">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="theme-color" content="#eaf4fa">
+    <meta property="og:title" content="a leaf in the breeze">
+    <meta property="og:url" content="https://juliand.ing/photography">
+    <meta property="og:image" content="https://juliand.ing/photos/photography_teaser.jpg">
+    <meta property="og:image:width" content="795">
+    <meta property="og:image:height" content="1200">
+    <meta property="og:image:alt" content="Ominous tree">
+    <meta property="og:description" content="The photography of Julian Ding.">
+</head>
+
+<body>
+
+<div class="page-fixed">
+    <div class="container">
+        <div class="title">a leaf in the breeze</div>
+        <p class="desc">
+            the moment is a fleeting thing<br>
+            to capture it is to chase after falling leaves
+        </p>
+        <p class="desc delay">
+            it's fun to try.
+        </p>
+    </div>
+    
+    <div class="container background">
+        <svg 
+            class="tree large"
+            viewBox="170 180 2140 3210"
+            preserveAspectRatio="xMidYMid meet"
+            style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;"
+        >
+            <style>
+                .leaf {
+                    transform-box: fill-box;
+                    transform-origin: top left;
+                    animation: sway 1.1s ease-in-out infinite alternate;
+                    }
+
+                    @keyframes sway {
+                    from {
+                        transform: rotate(-4deg);
+                    }
+                    to {
+                        transform: rotate(4deg);
+                    }
+                }
+
+                .leaf.one {
+                    animation-duration: 0.7s;
+                }
+
+                .leaf.two {
+                    animation-duration: 0.5s;
+                }
+
+                leaf.three {
+                    animation-duration: 0.3s;
+                }
+
+                leaf.four {
+                    animation-duration: 0.2s;
+                }
+
+                .leaf.right-anchor {
+                    transform-origin: top right;
+                }
+            </style>
+            
+            <g id="Canopy" transform="matrix(1,0,0,1,95.132072,-253.977804)">
+                <g id="Branch1">
+                    <g transform="matrix(-0.239439,-0.235315,-0.316541,0.322088,1299.428793,862.65426)">
+                        <path d="M946.142,1323.285L1883.87,1583.173L482.43,1583.173L946.142,1323.285Z" style="stroke:rgb(221,221,221);stroke-width:10.47px;"/>
+                    </g>
+                    <g transform="matrix(4.166667,0,0,4.166667,412.666597,1058.267461)">
+                        <rect class="leaf right-anchor" x="0.5" y="0.5" width="33.886" height="45.257" style="fill:rgb(238,238,238);stroke:black;stroke-width:1px;stroke-miterlimit:10;"/>
+                    </g>
+                    <g transform="matrix(-0.179443,1.451026,-0.590946,-0.07308,2371.837884,671.856641)">
+                        <path d="M548.369,2354.359L793.385,2784.137L0,2784.137L548.369,2354.359Z" style="stroke:rgb(221,221,221);stroke-width:3.73px;"/>
+                    </g>
+                    <g transform="matrix(4.166667,0,0,4.166667,949.271296,732.167834)">
+                        <rect class="leaf two" x="0.5" y="0.5" width="33.886" height="45.257" style="fill:rgb(238,238,238);stroke:black;stroke-width:1px;stroke-miterlimit:10;"/>
+                    </g>
+                    <g transform="matrix(0.254814,-0.203378,-0.458566,-0.574541,1289.627199,1912.159295)">
+                        <path d="M585.477,1323.285L1883.87,1583.173L482.43,1583.173L585.477,1323.285Z" style="stroke:rgb(221,221,221);stroke-width:7.33px;"/>
+                    </g>
+                    <g transform="matrix(4.166667,0,0,4.166667,859.348981,852.675879)">
+                        <rect class="leaf one" x="0.5" y="0.5" width="33.886" height="45.257" style="fill:rgb(238,238,238);stroke:black;stroke-width:1px;stroke-miterlimit:10;"/>
+                    </g>
+                </g>
+                <g transform="matrix(0.77931,0,0,0.813674,-119.274106,137.211902)">
+                    <rect class="leaf three" x="1401.694" y="1631.201" width="181.172" height="231.752" style="fill:rgb(238,238,238);stroke:black;stroke-width:5.23px;"/>
+                </g>
+                <g transform="matrix(0.77931,0,0,0.813674,346.150196,-222.008197)">
+                    <rect class="leaf two" x="1401.694" y="1631.201" width="181.172" height="231.752" style="fill:rgb(238,238,238);stroke:black;stroke-width:5.23px;"/>
+                </g>
+                <g transform="matrix(0.917506,-0.326125,-0.500616,-1.408408,662.56431,3888.13476)">
+                    <path d="M719.439,1323.285L1883.87,1583.173L482.43,1583.173L719.439,1323.285Z" style="stroke:rgb(221,221,221);stroke-width:3.3px;"/>
+                </g>
+                <g transform="matrix(4.166667,0,0,4.166667,857.257478,1556.67949)">
+                    <rect class="leaf" x="0.5" y="0.5" width="33.886" height="45.257" style="fill:rgb(238,238,238);stroke:black;stroke-width:1px;stroke-miterlimit:10;"/>
+                </g>
+                <g transform="matrix(4.166667,0,0,4.166667,1334.144242,1200.166963)">
+                    <rect class="leaf three" x="0.5" y="0.5" width="33.886" height="45.257" style="fill:rgb(238,238,238);stroke:black;stroke-width:1px;stroke-miterlimit:10;"/>
+                </g>
+                <g id="Branch2">
+                    <g transform="matrix(4.166667,0,0,4.166667,1352.886161,1443.364272)">
+                        <rect class="leaf four" x="0.5" y="0.5" width="33.886" height="45.257" style="fill:rgb(238,238,238);stroke:black;stroke-width:1px;stroke-miterlimit:10;"/>
+                    </g>
+                    <g transform="matrix(4.166667,0,0,4.166667,1759.109477,1508.960985)">
+                        <rect class="leaf three" x="0.5" y="0.5" width="33.886" height="45.257" style="fill:rgb(238,238,238);stroke:black;stroke-width:1px;stroke-miterlimit:10;"/>
+                    </g>
+                    <g transform="matrix(0.535903,0.173032,0.143951,-0.445834,603.375354,1922.719386)">
+                        <path d="M585.477,1323.285L1883.87,1583.173L482.43,1583.173L585.477,1323.285Z" style="stroke:rgb(221,221,221);stroke-width:8.04px;"/>
+                    </g>
+                    <g transform="matrix(4.166667,0,0,4.166667,1174.837937,1418.087163)">
+                        <rect class="leaf" x="0.5" y="0.5" width="33.886" height="45.257" style="fill:rgb(238,238,238);stroke:black;stroke-width:1px;stroke-miterlimit:10;"/>
+                    </g>
+                    <g transform="matrix(4.166667,0,0,4.166667,1480.955935,1483.683877)">
+                        <rect class="leaf four" x="0.5" y="0.5" width="33.886" height="45.257" style="fill:rgb(238,238,238);stroke:black;stroke-width:1px;stroke-miterlimit:10;"/>
+                    </g>
+                </g>
+                <g id="Branch3">
+                    <g transform="matrix(1,0,0,1,-187.40976,161.115965)">
+                        <g transform="matrix(4.166667,0,0,4.166667,2017.112981,813.958208)">
+                            <rect class="leaf two" x="0.5" y="0.5" width="33.886" height="45.257" style="fill:rgb(238,238,238);stroke:black;stroke-width:1px;stroke-miterlimit:10;"/>
+                        </g>
+                    </g>
+                    <g transform="matrix(0.410701,0.054733,0.061889,-0.464392,1270.814816,1626.480781)">
+                        <path d="M585.477,1323.285L1883.87,1583.173L482.43,1583.173L585.477,1323.285Z" style="stroke:rgb(221,221,221);stroke-width:9.42px;"/>
+                    </g>
+                    <g transform="matrix(4.166667,0,0,4.166667,1662.375692,1003.37108)">
+                        <rect class="leaf" x="0.5" y="0.5" width="33.886" height="45.257" style="fill:rgb(238,238,238);stroke:black;stroke-width:1px;stroke-miterlimit:10;"/>
+                    </g>
+                </g>
+                <g transform="matrix(4.166667,0,0,4.166667,1708.984309,671.595759)">
+                    <rect class="leaf one" x="0.5" y="0.5" width="33.886" height="45.257" style="fill:rgb(238,238,238);stroke:black;stroke-width:1px;stroke-miterlimit:10;"/>
+                </g>
+                <g transform="matrix(0.332619,-0.330823,-0.384064,-0.386149,1733.818283,1925.575889)">
+                    <path d="M1121.322,1323.285L1883.87,1583.173L482.43,1583.173L1121.322,1323.285Z" style="stroke:rgb(221,221,221);stroke-width:8.2px;"/>
+                </g>
+                <g transform="matrix(4.166667,0,0,4.166667,2037.733657,949.246031)">
+                    <rect class="leaf three" x="0.5" y="0.5" width="33.886" height="45.257" style="fill:rgb(238,238,238);stroke:black;stroke-width:1px;stroke-miterlimit:10;"/>
+                </g>
+            </g>
+            <g id="Trunk" transform="matrix(1,0,0,1,124.356225,-124.356225)">
+                <g transform="matrix(1.115331,-0.268561,0.127181,0.528184,-584.135578,2054.53872)">
+                    <path d="M568.57,2555.157L860.632,2795.679L276.507,2795.679L568.57,2555.157Z" style="stroke:rgb(221,221,221);stroke-width:4.64px;"/>
+                </g>
+                <g transform="matrix(1.900376,0.352198,-0.261553,1.411279,579.045877,-789.450145)">
+                    <path d="M370.998,2555.157L860.632,2795.679L276.507,2795.679L370.998,2555.157Z" style="stroke:rgb(221,221,221);stroke-width:2.45px;"/>
+                </g>
+                <g transform="matrix(-0.319402,1.324151,-0.684981,-0.165226,2870.685216,1585.06729)">
+                    <path d="M1429.334,2406.336L1621.031,2892.128L655.444,2892.128L1429.334,2406.336Z" style="stroke:rgb(221,221,221);stroke-width:3.84px;"/>
+                </g>
+                <g transform="matrix(0.368956,1.392281,-0.968791,0.256731,2936.646883,521.839649)">
+                    <path d="M565.87,2354.359L793.385,2784.137L0,2784.137L565.87,2354.359Z" style="stroke:rgb(221,221,221);stroke-width:3.36px;"/>
+                </g>
+                <g transform="matrix(0.146579,-1.185278,0.942027,0.116497,-1874.478033,2530.227109)">
+                    <path d="M530.868,2354.359L793.385,2784.137L0,2784.137L530.868,2354.359Z" style="stroke:rgb(221,221,221);stroke-width:3.86px;"/>
+                </g>
+            </g>
+        </svg>
+
+        <div class="photo-pile">
+            $PHOTO_PILE_ITEMS
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <a class="text-footer" href="index.html#">&copy; {{ site.time | date: "%Y" }} Julian Ding</a>
+    </footer>
+</div>
+
+<div class="scroll-track">
+    <div class="photo-spacer"></div>
+    $SCROLL_TRACK_ITEMS
+</div>
+</body>
+</html>
