@@ -1,12 +1,15 @@
 import random
+import subprocess
 import yaml
+from fractions import Fraction
 from pathlib import Path
 
 from bs4 import BeautifulSoup
-from PIL import Image, ImageOps
+from PIL import Image
+from PIL.ExifTags import Base, IFD
 
 
-THUMB_SIZE_PX = 800
+THUMB_SIZE_PX = 1200
 
 ASSETS_DIR = Path("photos/assets/")
 HTML_DIR = Path("photos/html/")
@@ -26,10 +29,41 @@ TITLE_KEY = r"{TITLE}"
 THUMB_FILE_KEY = r"{THUMB_FILE}"
 THUMB_WIDTH_KEY = r"{THUMB_WIDTH}"
 THUMB_HEIGHT_KEY = r"{THUMB_HEIGHT}"
+METADATA_KEY = r"{METADATA}"
 LONG_DESC_KEY = r"{LONG_DESC}"
 
 PHOTO_PILE_ITEMS_KEY = r"{PHOTO_PILE_ITEMS}"
 SCROLL_TRACK_ITEMS_KEY = r"{SCROLL_TRACK_ITEMS}"
+
+_KEEP_EXIF_TAGS = {
+    Base.Orientation,
+    Base.Make,
+    Base.Model,
+    Base.DateTimeOriginal,
+    Base.ExposureTime,
+    Base.FNumber,
+    Base.ISOSpeedRatings,
+    Base.FocalLength,
+    Base.Flash,
+    Base.ExposureBiasValue,
+    Base.FocalLengthIn35mmFilm,
+    Base.LensModel,
+}
+_EXIFTOOL_COMMAND = [
+    "exiftool",
+    "-overwrite_original",
+    "-all=",
+    "-tagsFromFile", "@",
+    "-Orientation",
+    "-Make",
+    "-Model",
+    "-DateTimeOriginal",
+    "-ExposureTime",
+    "-FNumber",
+    "-ISO",
+    "-FocalLength",
+    "-LensModel",
+]
 
 seen_ids = set()
 photo_pile_items = []
@@ -53,18 +87,46 @@ for fi in ASSETS_DIR.iterdir():
 
     title = photo_yaml.get("title", "untitled")
     description = photo_yaml.get("description", "")
-    desc_html = "<p>" + "</p>\n<p>".join(description.split("\n \n")) + "</p>"
+    desc_html = "<p>" + "</p>\n<p>".join(description.split("\n\n")) + "</p>"
 
-    # Make low-resolution thumbnail for display on main page
-    thumb_path = THUMBS_DIR / f"{photo_id}_thumb.jpg"
-    if thumb_path.is_file():
-        print("Overwriting thumbnail for", fi)
-    else:
-        print("Writing thumbnail for", fi)
-    img = Image.open(photo_jpeg)
-    ImageOps.exif_transpose(img)
-    img.thumbnail((THUMB_SIZE_PX, THUMB_SIZE_PX))
-    img.save(thumb_path, quality=85)
+    # Strip unimportant EXIF tags
+    subprocess.run(_EXIFTOOL_COMMAND + [str(photo_jpeg)], check=True)
+    print("Sanitized EXIF tags for", photo_jpeg)
+    exif_tags = {}
+    with Image.open(photo_jpeg) as img:
+        exif = img.getexif()
+        for tag, value in list(exif.items()):
+            if tag in _KEEP_EXIF_TAGS:
+                exif_tags[tag] = value
+            elif tag != Base.ExifOffset:
+                del exif[tag]
+        camera_exif = exif.get_ifd(IFD.Exif)
+        for tag, value in list(camera_exif.items()):
+            if tag in _KEEP_EXIF_TAGS:
+                exif_tags[tag] = value
+            else:
+                del camera_exif[tag]
+
+        # Make low-resolution thumbnail for display on main page
+        thumb_path = THUMBS_DIR / f"{photo_id}_thumb.jpg"
+        if thumb_path.is_file():
+            print("Overwriting thumbnail for", fi)
+        else:
+            print("Writing thumbnail for", fi)
+        img.thumbnail((THUMB_SIZE_PX, THUMB_SIZE_PX))
+        img.save(thumb_path, format="JPEG", exif=exif.tobytes())
+
+    camera = exif_tags.get(Base.Model, '(unknown camera)').strip(' ')
+    focal_length_mm = round(exif_tags.get(Base.FocalLength, 0))
+    f_number = exif_tags.get(Base.FNumber, 0)
+    exposure_time = Fraction(exif_tags.get(Base.ExposureTime, 0)).limit_denominator(50000)
+    film_speed = exif_tags.get(Base.ISOSpeedRatings, 0)
+    date_str = exif_tags.get(Base.DateTimeOriginal, "-/-/-").split(' ')[0].replace(':', '/')
+
+    metadata = (
+        f"[{date_str}]<br>\n"
+        f"{camera} &mdash; {focal_length_mm}mm &mdash; <i>f</i>/{f_number} &mdash; {exposure_time}s &mdash; ISO {film_speed}"
+    )
 
     # Format webpage for this photo
     photo_html = (
@@ -75,6 +137,7 @@ for fi in ASSETS_DIR.iterdir():
         .replace(THUMB_FILE_KEY, thumb_path.name)
         .replace(THUMB_WIDTH_KEY, str(img.width))
         .replace(THUMB_HEIGHT_KEY, str(img.height))
+        .replace(METADATA_KEY, metadata)
         .replace(LONG_DESC_KEY, desc_html)
     )
 
@@ -85,9 +148,9 @@ for fi in ASSETS_DIR.iterdir():
         rect for rect in tree_svg.find_all("rect")
         if "leaf" in rect.get("class", [])
     ]
-    keep = random.choice(leaves)
+    keep_leaf = random.choice(leaves)
     for leaf in leaves:
-        if leaf is not keep:
+        if leaf is not keep_leaf:
             leaf.parent.decompose()
     photo_html = str(soup)
 

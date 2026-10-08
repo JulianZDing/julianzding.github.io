@@ -1,7 +1,7 @@
 :root {
     --colour-bg: #111;
     --colour-text: #eee;
-    --font-main: Trebuchet MS, Tahoma, Arial, sans-serif;
+    --font-main: Trebuchet MS, Arial, sans-serif;
     --font-size-footer: 0.8rem;
     --max-width: 52rem;
     --max-photo-page-width: 60rem;
@@ -210,7 +210,7 @@ body {
 .photo-desc {
     grid-area: 1 / 1;
     margin-left: 25%;
-    padding-top: 28%;
+    padding-top: 30%;
     z-index: 3;
     text-shadow:
         0 0 0.1em var(--colour-bg),
@@ -221,6 +221,12 @@ body {
 
 .photo-title {
     font-size: 3rem;
-    font-weight: 700;
-    margin: 1.5rem 0 1.5rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+.photo-meta {
+    font-size: var(--font-size-smaller);
+    font-weight: lighter;
+    margin: 0 0 2rem;
 }

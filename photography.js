@@ -44,7 +44,7 @@ triggers.forEach((_, index) => {
         xInit: clamp(gaussianRandom(0, 0.1), -0.3, 0.3) - 0.27,
         xFinal: clamp(gaussianRandom(0, 0.2), -0.4, 0.4) - 0.15,
         yInit: 0.8 + Math.random() * 0.1,
-        yFinal: 0.16 + Math.random() * 0.002,
+        yFinal: 0.12 + Math.random() * 0.002,
         rotateXFinal: 70,
         rotateZInit: -rotationDir * 1,
         rotateZ: rotationDir * 1,

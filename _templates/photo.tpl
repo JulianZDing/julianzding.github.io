@@ -170,6 +170,9 @@ permalink: /photos/{PHOTO_ID}
         </svg>
         <div class="container photo-desc">
             <div class="photo-title">{TITLE}</div>
+            <div class="photo-meta">
+                {METADATA}
+            </div>
             {LONG_DESC}
         </div>
     </div>
