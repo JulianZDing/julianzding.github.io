@@ -1,3 +1,5 @@
 _site/
 .bundle/
+.venv/
 Gemfile*
+uv.lock
