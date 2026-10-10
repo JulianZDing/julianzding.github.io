@@ -17,11 +17,14 @@ THUMBS_DIR = Path("photos/thumbnails/")
 
 TPL_DIR = Path("_templates/")
 PHOTO_TPL_PATH = TPL_DIR / "photo.tpl"
-MAIN_TPL_PATH = TPL_DIR / "photography.tpl"
-MAIN_HTML_PATH = Path("photography.html")
-
 PHOTO_TPL = PHOTO_TPL_PATH.read_text()
+MAIN_TPL_PATH = TPL_DIR / "photography.tpl"
 MAIN_TPL = MAIN_TPL_PATH.read_text()
+MAIN_LIST_TPL_PATH = TPL_DIR / "photos.tpl"
+MAIN_LIST_TPL = MAIN_LIST_TPL_PATH.read_text()
+
+MAIN_HTML_PATH = Path("photography.html")
+MAIN_LIST_HTML_PATH = Path("photos.html")
 
 PHOTO_ID_KEY = r"{PHOTO_ID}"
 PHOTO_FILE_KEY = r"{PHOTO_FILE}"
@@ -36,10 +39,18 @@ PHOTO_PILE_ITEMS_KEY = r"{PHOTO_PILE_ITEMS}"
 SCROLL_TRACK_ITEMS_KEY = r"{SCROLL_TRACK_ITEMS}"
 
 _KEEP_EXIF_TAGS = {
+    # Orientation
     Base.Orientation,
+
+    # Camera
     Base.Make,
     Base.Model,
+    Base.LensModel,
+
+    # Dates
     Base.DateTimeOriginal,
+
+    # Exposure
     Base.ExposureTime,
     Base.FNumber,
     Base.ISOSpeedRatings,
@@ -47,13 +58,23 @@ _KEEP_EXIF_TAGS = {
     Base.Flash,
     Base.ExposureBiasValue,
     Base.FocalLengthIn35mmFilm,
-    Base.LensModel,
+
+    # Colour information
+    Base.ColorSpace,
+    Base.WhiteBalance,
+    Base.LightSource,
 }
-_EXIFTOOL_COMMAND = [
+
+# Strip unimportant EXIF tags
+print("Sanitizing EXIF tags using exiftool")
+subprocess.run([
     "exiftool",
+    "-r",
     "-overwrite_original",
     "-all=",
+    "--icc_profile:all",
     "-tagsFromFile", "@",
+    "-ColorSpaceTags",
     "-Orientation",
     "-Make",
     "-Model",
@@ -63,7 +84,8 @@ _EXIFTOOL_COMMAND = [
     "-ISO",
     "-FocalLength",
     "-LensModel",
-]
+    "photos/",
+], check=True)
 
 seen_ids = set()
 photo_pile_items = []
@@ -90,8 +112,6 @@ for fi in ASSETS_DIR.iterdir():
     desc_html = "<p>" + "</p>\n<p>".join(description.split("\n\n")) + "</p>"
 
     # Strip unimportant EXIF tags
-    subprocess.run(_EXIFTOOL_COMMAND + [str(photo_jpeg)], check=True)
-    print("Sanitized EXIF tags for", photo_jpeg)
     exif_tags = {}
     with Image.open(photo_jpeg) as img:
         exif = img.getexif()
@@ -113,8 +133,15 @@ for fi in ASSETS_DIR.iterdir():
             print("Overwriting thumbnail for", fi)
         else:
             print("Writing thumbnail for", fi)
+        
+        icc_profile = img.info.get("icc_profile")
         img.thumbnail((THUMB_SIZE_PX, THUMB_SIZE_PX))
-        img.save(thumb_path, format="JPEG", exif=exif.tobytes())
+        img.save(
+            thumb_path,
+            quality=85,
+            icc_profile=icc_profile,
+            exif=exif.tobytes(),
+        )
 
     camera = exif_tags.get(Base.Model, '(unknown camera)').strip(' ')
     focal_length_mm = round(exif_tags.get(Base.FocalLength, 0))

@@ -167,6 +167,11 @@ permalink: /photos/{PHOTO_ID}
                 </g>
             </g>
             </a>
+            <a class="copyright" href="index.html">
+                <text transform="translate(480 3070) rotate(-77)" text-anchor="start">
+                    &copy; {{ site.time | date: "%Y" }} Julian Ding
+                </text>
+            </a>
         </svg>
         <div class="container photo-desc">
             <div class="photo-title">{TITLE}</div>
@@ -176,9 +181,6 @@ permalink: /photos/{PHOTO_ID}
             {LONG_DESC}
         </div>
     </div>
-    <footer class="site-footer">
-        <a class="text-footer" href="../index.html#">&copy; {{ site.time | date: "%Y" }} Julian Ding</a>
-    </footer>
 </div>
 
 </body>

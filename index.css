@@ -131,6 +131,10 @@ main {
     font-weight: normal;
 }
 
+.nav-link:hover {
+    text-decoration: underline;
+}
+
 .about-page .nav-link.about {
     text-shadow: 1px 0 0 currentColor, 0.5px 0 0 currentColor, 0.5px 0 0 currentColor;
 }

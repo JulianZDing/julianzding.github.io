@@ -1,8 +1,9 @@
 :root {
     --colour-bg: #111;
     --colour-text: #eee;
+    --colour-list-link: #bbb;
     --font-main: Trebuchet MS, Arial, sans-serif;
-    --font-size-footer: 0.8rem;
+    --font-size-smaller: 0.8rem;
     --max-width: 52rem;
     --max-photo-page-width: 60rem;
     --container-padding: 1.25rem;
@@ -45,23 +46,35 @@ body {
     padding: var(--container-padding);
 }
 
+.container.row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.container.row.centered {
+    justify-content: center;
+}
+
 .container.grid {
     display: grid;
 }
 
 /* Main page */
 
-.page-fixed {
-    position: fixed;
-    inset: 0;
+.page {
     max-width: var(--max-width);
     margin: 0 auto;
-    height: 100%;
+}
+
+.page.fixed {
+    position: fixed;
     display: flex;
     flex-direction: column;
+    inset: 0;
+    height: 100%;
     opacity: 0;
     animation: fadeIn var(--time-page-fade) ease-out forwards;
-    z-index: 1;
 }
 
 .title {
@@ -81,33 +94,33 @@ body {
     animation-delay: calc(2 * var(--time-desc-fade) + 3 * var(--time-delay-between));
 }
 
-.site-footer {
-    display: flex;
-    justify-content: center;
-    padding: 1rem;
+.copyright text {
+    fill: var(--colour-text);
+    font-family: var(--font-main);
+    font-size: 50px;
+    cursor: pointer;
 }
 
-.text-footer {
-    text-decoration: none;
-    color: inherit;
-    font-weight: normal;
-    font-size: var(--font-size-smaller);
+.copyright:hover text {
+    text-decoration: underline;
 }
 
 .container.background {
-    padding: 0;
     flex: 1;
     display: flex;
     align-items: flex-start;
     min-height: 0;
+    padding: 0;
 }
 
-.tree {
+.tree a:not(.copyright) {
+    pointer-events: none;
+}
+
+.tree #Canopy,
+.tree #Trunk {
     transition: filter 1s;
-}
-
-.tree * {
-    pointer-events: visiblePainted;
+    filter: invert(0);
 }
 
 .tree.large {
@@ -121,7 +134,13 @@ body {
     width: auto;
 }
 
-.tree.large:has(.leaf:hover) {
+.tree.large .leaf {
+    pointer-events: visiblePainted;
+    cursor: pointer;
+}
+
+.tree.large:has(.leaf:hover) #Canopy,
+.tree.large:has(.leaf:hover) #Trunk {
     filter: invert(1);
 }
 
@@ -199,12 +218,14 @@ body {
     filter: invert(1);
 }
 
-.tree.small * {
+.tree.small:not(.copyright) * {
+    pointer-events: visiblePainted;
     cursor: pointer;
 }
 
-.tree.small:has(*:hover) {
-    filter: invert(0);
+.tree.small:has(#Canopy:hover, #Trunk:hover) #Canopy,
+.tree.small:has(#Canopy:hover, #Trunk:hover) #Trunk {
+    filter: invert(1);
 }
 
 .photo-desc {
@@ -217,6 +238,7 @@ body {
         0 0 0.2em var(--colour-bg),
         0 0 0.4em var(--colour-bg),
         0 0 0.8em var(--colour-bg);
+    pointer-events: none;
 }
 
 .photo-title {
@@ -229,4 +251,76 @@ body {
     font-size: var(--font-size-smaller);
     font-weight: lighter;
     margin: 0 0 2rem;
+}
+
+/* Page with plain list of all photo links */
+
+.tree.list {
+    right: 0;
+    width: 75%;
+    max-height: 100%;
+}
+
+.tree.list:not(.copyright) * {
+    pointer-events: visiblePainted;
+    cursor: pointer;
+}
+
+.tree.list:has(#Canopy:hover, #Trunk:hover) #Canopy,
+.tree.list:has(#Canopy:hover, #Trunk:hover) #Trunk {
+    filter: invert(1);
+}
+
+.container.background.list {
+    margin-top: var(--container-padding);
+}
+
+.photos-list {
+    position: relative;
+    display: inline-block;
+    margin-top: 48%;
+    margin-left: 35%;
+    z-index: 3;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.list-icon {
+    height: 2rem;
+}
+
+.list-title {
+    font-size: 2rem;
+    font-weight: bold;
+    padding-left: 1rem;
+}
+
+.list-photos {
+    padding: 0 2rem 0;
+    list-style: none;
+}
+
+.list-photos a {
+    padding-left: 2rem;
+    color: var(--colour-list-link);
+    text-decoration: none;
+}
+
+.list-photos a:hover {
+    text-decoration: underline;
+}
+
+.list-photos li {
+    position: relative;
+}
+
+.list-photos li::before {
+    content: "";
+    position: absolute;
+    width: 1.5rem;
+    height: 1.5rem;
+    background: url("photos/leaf.svg") center / contain no-repeat;
 }
