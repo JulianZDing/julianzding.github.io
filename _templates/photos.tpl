@@ -30,19 +30,6 @@ permalink: /photos.html
 
 <body>
 
-<div class="page">
-    <div class="photos-list">
-        <div class="container row centered">
-            <img class="list-icon" src="photos/pile.svg" alt="pile of photos"/>
-            <div class="list-title">the pile</div>
-        </div>
-        <ul class="list-photos">
-            {PHOTO_LIST}
-        </ul>
-    </div>
-    
-</div>
-
 <div class="page fixed">
     <svg 
         class="tree list"
@@ -104,6 +91,19 @@ permalink: /photos.html
             </text>
         </a>
     </svg>
+</div>
+
+<div class="page noclick">
+    <div class="photos-list">
+        <div class="container row centered">
+            <img class="list-icon" src="photos/pile.svg" alt="pile of photos"/>
+            <div class="list-title">the pile</div>
+        </div>
+        <ul class="list-photos">
+            {PHOTO_LIST}
+        </ul>
+    </div>
+    
 </div>
 
 </body>

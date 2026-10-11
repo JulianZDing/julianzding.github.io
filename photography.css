@@ -66,6 +66,11 @@ body {
 .page {
     max-width: var(--max-width);
     margin: 0 auto;
+    animation: fadeIn var(--time-page-fade) ease-out forwards;
+}
+
+.page.noclick {
+    pointer-events: none;
 }
 
 .page.fixed {
@@ -75,8 +80,6 @@ body {
     align-items: flex-start;
     inset: 0;
     height: 100%;
-    opacity: 0;
-    animation: fadeIn var(--time-page-fade) ease-out forwards;
 }
 
 .copyright text {
@@ -149,14 +152,36 @@ body {
     z-index: -1;
 }
 
+.scroll-hint {
+    position: absolute;
+    left: 55%;
+    top: 50%;
+    font-family: monospace;
+    opacity: 0;
+    transition: opacity 0.5s ease, transform 1s ease;
+}
+
+.scroll-hint.visible {
+    opacity: 1;
+    transform: translateY(1rem);
+}
+
 .photo-spacer, .photo-trigger {
     height: 100vh;
 }
 
-.photo-pile {
+.photo-pile{
     position: absolute;
     left: 48%;
     top: 45%;
+}
+
+.no-js-message {
+    position: absolute;
+    left: 48%;
+    top: 45%;
+    font-family: monospace;
+    z-index: 10;
 }
 
 .photo-wrapper {
@@ -289,6 +314,7 @@ body {
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     border: 1px solid rgba(255, 255, 255, 0.3);
+    pointer-events: auto;
 }
 
 .list-icon {

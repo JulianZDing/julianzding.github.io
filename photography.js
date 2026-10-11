@@ -1,3 +1,5 @@
+// Animations for falling leaves
+
 function gaussianRandom(mean, stddev) {
     let u = 0;
     let v = 0;
@@ -142,3 +144,28 @@ function requestUpdate() {
 addEventListener('scroll', requestUpdate, { passive: true });
 addEventListener('resize', requestUpdate);
 update();
+
+// Scroll hint
+
+const scrollHint = document.querySelector(".scroll-hint");
+
+if (scrollHint) {
+    let hasScrolled = window.scrollY > 0;
+
+    const hintTimer = setTimeout(() => {
+        if (!hasScrolled) {
+            scrollHint.classList.add("visible");
+        }
+    }, 10000);
+
+    function dismissHint() {
+        hasScrolled = true;
+        clearTimeout(hintTimer);
+        scrollHint.classList.remove("visible");
+    }
+
+    window.addEventListener("scroll", dismissHint, {
+        passive: true,
+        once: true
+    });
+}

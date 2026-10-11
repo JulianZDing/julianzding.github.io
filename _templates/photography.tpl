@@ -36,7 +36,7 @@ permalink: /photography.html
         <div class="title">a leaf in the breeze</div>
         <p class="desc">
             the moment is a fleeting thing<br>
-            to capture it is to chase after falling leaves
+            to capture it is like catching autumn leaves
         </p>
         <p class="desc delay">
             it's fun to try.
@@ -189,9 +189,26 @@ permalink: /photography.html
             </a>
         </svg>
 
+        <noscript>
+            <style>
+                .photo-pile {
+                    display: none;
+                }
+                .scroll-track {
+                    display: none;
+                }
+            </style>
+            <div class="no-js-message">
+                <p>It looks like Javascript is disabled on your browser...</p>
+                <p><b>Why not try clicking on one of the leaves?</b></p>
+            </div>
+        </noscript>
+
         <div class="photo-pile">
             {PHOTO_PILE_ITEMS}
         </div>
+
+        <div class="scroll-hint">&#129095; scroll down &#129095;</div>
     </div>
 </div>
 
