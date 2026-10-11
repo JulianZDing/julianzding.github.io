@@ -42,8 +42,8 @@ permalink: /photography.html
             it's fun to try.
         </p>
     </div>
-    
-    <div class="container background">
+
+    <div class="scene">
         <svg 
             class="tree large"
             viewBox="170 180 2140 3210"
@@ -182,7 +182,7 @@ permalink: /photography.html
                 </g>
             </g>
             </a>
-            <a class="copyright" href="index.html">
+            <a class="copyright" href="photography.html">
                 <text transform="translate(480 3070) rotate(-77)" text-anchor="start">
                     &copy; {{ site.time | date: "%Y" }} Julian Ding
                 </text>

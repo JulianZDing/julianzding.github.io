@@ -38,6 +38,8 @@ LONG_DESC_KEY = r"{LONG_DESC}"
 PHOTO_PILE_ITEMS_KEY = r"{PHOTO_PILE_ITEMS}"
 SCROLL_TRACK_ITEMS_KEY = r"{SCROLL_TRACK_ITEMS}"
 
+PHOTO_LIST_KEY = r"{PHOTO_LIST}"
+
 _KEEP_EXIF_TAGS = {
     # Orientation
     Base.Orientation,
@@ -87,9 +89,12 @@ subprocess.run([
     "photos/",
 ], check=True)
 
+html_str_paths = []
+
 seen_ids = set()
 photo_pile_items = []
 scroll_track_items = []
+photo_list_items = []
 for fi in ASSETS_DIR.iterdir():
     if not fi.suffix == ".yaml":
         continue
@@ -180,25 +185,23 @@ for fi in ASSETS_DIR.iterdir():
         if leaf is not keep_leaf:
             leaf.parent.decompose()
     photo_html = str(soup)
-
-    # Write html page for this photo
     photo_html_path = HTML_DIR / f"{photo_id}.html"
-    if photo_html_path.is_file():
-        print("Overwriting", photo_html_path)
-    else:
-        print("Writing", photo_html_path)
-    photo_html_path.write_text(photo_html)
+    html_str_paths.append((photo_html, photo_html_path))
 
-    # Generate corresponding scroll track and photo pile items
+    # Generate corresponding list items for main pages
     photo_pile_items.append(
         f'<div id="{photo_id}" class="photo-wrapper">'
         f'<a class="photo" href="photos/{photo_html_path.name}">'
         f'<img src="{thumb_path}"/>'
+        '<div class="photo-back"></div>'
         '</a>'
         '</div>'
     )
     scroll_track_items.append(
         f'<div class="photo-trigger" data-photo="{photo_id}"></div>'
+    )
+    photo_list_items.append(
+        f'<li><a href="photos/{photo_html_path.name}">{date_str}: {title} ({photo_id})</a></li>'
     )
 
 main_html = (
@@ -206,8 +209,17 @@ main_html = (
     .replace(PHOTO_PILE_ITEMS_KEY, "\n".join(photo_pile_items))
     .replace(SCROLL_TRACK_ITEMS_KEY, "\n".join(scroll_track_items))
 )
-if MAIN_HTML_PATH.is_file():
-    print("Overwriting", MAIN_HTML_PATH)
-else:
-    print("Writing", MAIN_HTML_PATH)
-MAIN_HTML_PATH.write_text(main_html)
+html_str_paths.append((main_html, MAIN_HTML_PATH))
+
+main_list_html = MAIN_LIST_TPL.replace(
+    PHOTO_LIST_KEY, "\n".join(sorted(photo_list_items, reverse=True))
+)
+html_str_paths.append((main_list_html, MAIN_LIST_HTML_PATH))
+
+# Write HTML files
+for html_str, html_path in html_str_paths:
+    if html_path.is_file():
+        print("Overwriting", html_path)
+    else:
+        print("Writing", html_path)
+    html_path.write_text(html_str)
