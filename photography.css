@@ -5,8 +5,7 @@
     --colour-list-link: #bbb;
     --font-main: Trebuchet MS, Arial, sans-serif;
     --font-size-smaller: 0.8rem;
-    --max-width: 52rem;
-    --max-photo-page-width: 60rem;
+    --max-width: 60rem;
     --container-padding: 1.25rem;
     --time-delay-between: 0.7s;
     --time-page-fade: 0.5s;
@@ -35,6 +34,10 @@ html {
     }
 }
 
+.page, .photo-large, .photo-below {
+    animation: fadeIn var(--time-page-fade) ease-out forwards;
+}
+
 body {
     box-sizing: border-box;
     background-color: var(--colour-bg);
@@ -57,6 +60,10 @@ body {
     justify-content: center;
 }
 
+.container.row.right {
+    justify-content: flex-end;
+}
+
 .container.grid {
     display: grid;
 }
@@ -66,7 +73,6 @@ body {
 .page {
     max-width: var(--max-width);
     margin: 0 auto;
-    animation: fadeIn var(--time-page-fade) ease-out forwards;
 }
 
 .page.noclick {
@@ -131,6 +137,7 @@ body {
 
 .tree.large {
     display: block;
+    max-width: 98vw;
     height: 100%;
 }
 
@@ -208,7 +215,7 @@ body {
 }
 
 .photo img {
-    max-width: 70vw;
+    max-width: 60vw;
     max-height: 25vh;
     box-sizing: border-box;
     border: min(1.2vh, 2vw) solid var(--colour-border);
@@ -228,26 +235,28 @@ body {
 
 /* Individual photo pages */
 
-.photo-page {
-    max-width: var(--max-photo-page-width);
-    margin: var(--container-padding) auto;
-}
-
 .photo-large {
-    position: relative;
-    display: block;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
 }
 
 .photo-large img {
-    max-width: 100%;
-    max-height: 100%;
+    max-width: calc(100vw - 2 * var(--container-padding));
+    max-height: calc(100vh - 2 * var(--container-padding));
     box-sizing: border-box;
+}
+
+.photo-below {
+    display: grid;
+    padding: var(--container-padding);
+    max-width: var(--max-width);
+    margin: 0 auto;
 }
 
 .tree.small {
     grid-area: 1 / 1;
     width: 50%;
-    filter: invert(1);
 }
 
 .tree.small:not(.copyright) * {
@@ -255,9 +264,14 @@ body {
     cursor: pointer;
 }
 
+.tree.small #Canopy,
+.tree.small #Trunk {
+    filter: invert(1);
+}
+
 .tree.small:has(#Canopy:hover, #Trunk:hover) #Canopy,
 .tree.small:has(#Canopy:hover, #Trunk:hover) #Trunk {
-    filter: invert(1);
+    filter: invert(0);
 }
 
 .photo-desc {
@@ -287,8 +301,18 @@ body {
 
 /* Page with plain list of all photo links */
 
+.static-scene {
+    grid-area: 1 / 1;
+    position: fixed;
+    display: inline-block;
+    justify-self: end;
+    padding: 0;
+    max-width: 70cqw;
+    height: calc(100% - 2 * var(--container-padding));
+}
+
 .tree.list {
-    left: 0;
+    display: block;
     max-width: 100%;
     height: 100%;
 }
@@ -304,11 +328,12 @@ body {
 }
 
 .photos-list {
+    grid-area: 1 / 1;
     position: relative;
     display: inline-block;
-    margin-top: min(60%, 45vh);
-    margin-left: min(44%, 35vh);
-    z-index: 3;
+    margin-top: min(calc(0.15 * var(--max-width)), 15vh);
+    width: max-content;
+    z-index: 2;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 16px;
     backdrop-filter: blur(8px);
@@ -352,4 +377,25 @@ body {
     width: 1.5rem;
     height: 1.5rem;
     background: url("photos/leaf.svg") center / contain no-repeat;
+}
+
+.photo-previews {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.photo-preview {
+    position: absolute;
+    left: 48%;
+    top: 45%;
+    width: 55%;
+    max-height: 65%;
+    height: auto;
+    object-fit: contain;
+    box-sizing: border-box;
+    border: min(1.2vh, 2vw) solid var(--colour-border);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s;
 }

@@ -43,8 +43,8 @@ const pilePositions = [];
 triggers.forEach((_, index) => {
     rotationDir = (index % 2 === 0) ? -1 : 1;
     pilePositions[index] = {
-        xInit: clamp(gaussianRandom(0, 0.1), -0.3, 0.3) - 0.2,
-        xFinal: clamp(gaussianRandom(0, 0.2), -0.4, 0.4),
+        xInit: clamp(gaussianRandom(0, 0.1), -0.2, 0.2) - 0.2,
+        xFinal: clamp(gaussianRandom(0, 0.15), -0.3, 0.3) - 0.1,
         yInit: Math.random() * 0.18 + 0.35,
         yFinal: + Math.random() * 0.005 - 0.54,
         rotateXFinal: 70,

@@ -13,7 +13,7 @@ permalink: /photography.html
     <title>a leaf in the breeze</title>
     <meta name="description" content="The photography of Julian Ding.">
     <link rel="canonical" href="https://juliand.ing/photography">
-    <link rel="icon" href="photos/leaf.svg" type="image/svg+xml">
+    <link rel="icon" href="photos/pile.svg" type="image/svg+xml">
 
     <!-- Open Graph / Facebook / Slack / Discord -->
     <meta property="og:type" content="website">
@@ -182,7 +182,7 @@ permalink: /photography.html
                 </g>
             </g>
             </a>
-            <a class="copyright" href="photography.html">
+            <a class="copyright" href="index.html">
                 <text transform="translate(480 3070) rotate(-77)" text-anchor="start">
                     &copy; {{ site.time | date: "%Y" }} Julian Ding
                 </text>

@@ -38,7 +38,9 @@ LONG_DESC_KEY = r"{LONG_DESC}"
 PHOTO_PILE_ITEMS_KEY = r"{PHOTO_PILE_ITEMS}"
 SCROLL_TRACK_ITEMS_KEY = r"{SCROLL_TRACK_ITEMS}"
 
+PHOTO_PREVIEW_STYLING_KEY = r"{PHOTO_PREVIEW_STYLING}"
 PHOTO_LIST_KEY = r"{PHOTO_LIST}"
+PHOTO_PREVIEW_LIST_KEY = r"{PHOTO_PREVIEW_LIST}"
 
 _KEEP_EXIF_TAGS = {
     # Orientation
@@ -92,9 +94,12 @@ subprocess.run([
 html_str_paths = []
 
 seen_ids = set()
+sort_keys = []
 photo_pile_items = []
 scroll_track_items = []
+photo_preview_styling_items = []
 photo_list_items = []
+photo_preview_items = []
 for fi in ASSETS_DIR.iterdir():
     if not fi.suffix == ".yaml":
         continue
@@ -113,7 +118,15 @@ for fi in ASSETS_DIR.iterdir():
         photo_yaml = yaml.safe_load(f)
 
     title = photo_yaml.get("title", "untitled")
+    date_yaml = photo_yaml.get("date", "-/-/-")
+    camera_yaml = photo_yaml.get("camera", None)
+    film_stock = photo_yaml.get("film", None)
+    focal_length_yaml = photo_yaml.get("focal_length_mm", None)
+    f_number_yaml = photo_yaml.get("f_number", None)
+    exposure_time_yaml = photo_yaml.get("shutter", None)
+    iso_yaml = photo_yaml.get("iso", None)
     description = photo_yaml.get("description", "")
+
     desc_html = "<p>" + "</p>\n<p>".join(description.split("\n\n")) + "</p>"
 
     # Strip unimportant EXIF tags
@@ -148,17 +161,34 @@ for fi in ASSETS_DIR.iterdir():
             exif=exif.tobytes(),
         )
 
-    camera = exif_tags.get(Base.Model, '(unknown camera)').strip(' ')
-    focal_length_mm = round(exif_tags.get(Base.FocalLength, 0))
-    f_number = exif_tags.get(Base.FNumber, 0)
-    exposure_time = Fraction(exif_tags.get(Base.ExposureTime, 0)).limit_denominator(50000)
-    film_speed = exif_tags.get(Base.ISOSpeedRatings, 0)
-    date_str = exif_tags.get(Base.DateTimeOriginal, "-/-/-").split(' ')[0].replace(':', '/')
-
-    metadata = (
-        f"[{date_str}]<br>\n"
-        f"{camera} &mdash; {focal_length_mm}mm &mdash; <i>f</i>/{f_number} &mdash; {exposure_time}s &mdash; ISO {film_speed}"
+    camera = exif_tags.get(Base.Model, camera_yaml)
+    focal_length = exif_tags.get(Base.FocalLength, focal_length_yaml)
+    if focal_length is not None:
+        focal_length = f"{round(focal_length)}mm"
+    f_number = exif_tags.get(Base.FNumber, f_number_yaml)
+    if f_number is not None:
+        f_number = f"<i>f</i>/{f_number}"
+    exposure_time = exif_tags.get(Base.ExposureTime, exposure_time_yaml)
+    if exposure_time is not None:
+        exposure_time = f"{Fraction(exposure_time).limit_denominator(50000)}s"
+    iso = exif_tags.get(Base.ISOSpeedRatings, iso_yaml)
+    if iso is not None:
+        if isinstance(iso, list):
+            iso = iso[0]
+        iso = f"ISO {round(iso)}"
+    optional_metadata = " &mdash; ".join(
+        m for m in [camera, focal_length, f_number, exposure_time, iso] if m is not None
     )
+
+    # Sort by date
+    date_str = exif_tags.get(Base.DateTimeOriginal, date_yaml).split(" ")[0].replace(":", "/")
+    sort_keys.append((date_str, photo_id))
+
+    metadata = f"[{date_str}]"
+    if optional_metadata:
+        metadata += "<br>\n" + optional_metadata
+    if film_stock:
+        metadata += "<br>\n" + film_stock
 
     # Format webpage for this photo
     photo_html = (
@@ -200,9 +230,37 @@ for fi in ASSETS_DIR.iterdir():
     scroll_track_items.append(
         f'<div class="photo-trigger" data-photo="{photo_id}"></div>'
     )
-    photo_list_items.append(
-        f'<li><a href="photos/{photo_html_path.name}">{date_str}: {title} ({photo_id})</a></li>'
+    photo_preview_styling_items.append(
+        f'.page:has(.list-photos a[data-photo="{photo_id}"]:is(:hover, :focus-visible)) '
+        f'.photo-preview[data-photo="{photo_id}"]'
     )
+    photo_list_items.append(
+        f'<li><a data-photo="{photo_id}" href="photos/{photo_html_path.name}">{date_str}: {title} ({photo_id})</a></li>'
+    )
+    photo_preview_items.append(
+        f'<img class="photo-preview" data-photo="{photo_id}" src="{thumb_path}"/>'
+    )
+
+sorted_lists = []
+for element_list in [
+    photo_pile_items,
+    scroll_track_items,
+    photo_preview_styling_items,
+    photo_list_items,
+    photo_preview_items,
+]:
+    sorted_list = [
+        x for _, x in sorted(zip(sort_keys, element_list), reverse=True)
+    ]
+    sorted_lists.append(sorted_list)
+
+(
+    photo_pile_items,
+    scroll_track_items,
+    photo_preview_styling_items,
+    photo_list_items,
+    photo_preview_items,
+) = sorted_lists
 
 main_html = (
     MAIN_TPL
@@ -211,8 +269,11 @@ main_html = (
 )
 html_str_paths.append((main_html, MAIN_HTML_PATH))
 
-main_list_html = MAIN_LIST_TPL.replace(
-    PHOTO_LIST_KEY, "\n".join(sorted(photo_list_items, reverse=True))
+main_list_html = (
+    MAIN_LIST_TPL
+    .replace(PHOTO_PREVIEW_STYLING_KEY, ",\n".join(photo_preview_styling_items))
+    .replace(PHOTO_LIST_KEY, "\n".join(photo_list_items))
+    .replace(PHOTO_PREVIEW_LIST_KEY, "\n".join(photo_preview_items))
 )
 html_str_paths.append((main_list_html, MAIN_LIST_HTML_PATH))
 
