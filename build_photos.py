@@ -1,13 +1,12 @@
 import random
 import subprocess
-import yaml
 from fractions import Fraction
 from pathlib import Path
 
+import yaml
 from bs4 import BeautifulSoup
 from PIL import Image
-from PIL.ExifTags import Base, IFD
-
+from PIL.ExifTags import IFD, Base
 
 THUMB_SIZE_PX = 1200
 
@@ -101,7 +100,7 @@ photo_preview_styling_items = []
 photo_list_items = []
 photo_preview_items = []
 for fi in ASSETS_DIR.iterdir():
-    if not fi.suffix == ".yaml":
+    if fi.suffix != ".yaml":
         continue
 
     photo_id = fi.stem
@@ -109,10 +108,10 @@ for fi in ASSETS_DIR.iterdir():
         raise KeyError(f"duplicate photos with ID {photo_id}")
     seen_ids.add(photo_id)
 
-    photo_jpeg = [
+    photo_jpeg = next(
         path for path in ASSETS_DIR.glob(f"{photo_id}.*")
         if path.suffix.lower() in {".jpg", ".jpeg"}
-    ][0]
+    )
 
     with open(fi) as f:
         photo_yaml = yaml.safe_load(f)

@@ -6,4 +6,5 @@ dependencies = [
     "beautifulsoup4",
     "pillow",
     "pyyaml",
+    "ruff",
 ]
