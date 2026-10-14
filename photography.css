@@ -73,6 +73,7 @@ body {
 .page {
     max-width: var(--max-width);
     margin: 0 auto;
+    container-type: inline-size;
 }
 
 .page.noclick {
@@ -198,6 +199,7 @@ body {
     transform-origin: center;
     transform-style: preserve-3d;
     will-change: transform;
+    visibility: hidden;
 }
 
 .photo {
@@ -218,7 +220,7 @@ body {
     max-width: 60vw;
     max-height: 25vh;
     box-sizing: border-box;
-    border: min(1.2vh, 2vw) solid var(--colour-border);
+    border: min(1.2cqh, 2cqw) solid var(--colour-border);
     opacity: var(--photo-opacity, 0);
 }
 
@@ -290,13 +292,14 @@ body {
 .photo-title {
     font-size: 3rem;
     font-weight: bold;
-    margin: 0;
+    margin: 0 0 var(--container-padding);
+    line-height: 1.1;
 }
 
 .photo-meta {
     font-size: var(--font-size-smaller);
     font-weight: lighter;
-    margin: 0 0 2rem;
+    margin: 0 0 var(--container-padding);
 }
 
 /* Page with plain list of all photo links */
@@ -307,8 +310,8 @@ body {
     display: inline-block;
     justify-self: end;
     padding: 0;
-    max-width: 70cqw;
-    height: calc(100% - 2 * var(--container-padding));
+    width: 65cqw;
+    max-height: calc(100% - 2 * var(--container-padding));
 }
 
 .tree.list {
@@ -389,12 +392,13 @@ body {
     position: absolute;
     left: 48%;
     top: 45%;
-    width: 55%;
-    max-height: 65%;
+    max-width: 55%;
+    max-height: 35%;
+    width: auto;
     height: auto;
     object-fit: contain;
     box-sizing: border-box;
-    border: min(1.2vh, 2vw) solid var(--colour-border);
+    border: min(1cqh, 1.75cqw) solid var(--colour-border);
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease, visibility 0.3s;

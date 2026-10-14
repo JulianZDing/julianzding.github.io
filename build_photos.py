@@ -7,14 +7,18 @@ import yaml
 from bs4 import BeautifulSoup
 from PIL import Image
 from PIL.ExifTags import IFD, Base
+from tqdm.auto import tqdm
 
-THUMB_SIZE_PX = 1200
+DISPLAY_SIZE_PX = 4000
+THUMB_SIZE_PX = 1000
 
-ASSETS_DIR = Path("photos/assets/")
+FULL_RES_DIR = Path("_full_resolution")
 HTML_DIR = Path("photos/html/")
-THUMBS_DIR = Path("photos/thumbnails/")
+DISPLAY_DIR = Path("photos/large/")
+THUMBS_DIR = Path("photos/thumb/")
 
 TPL_DIR = Path("_templates/")
+PHOTO_YAML_DIR = TPL_DIR / "descriptions"
 PHOTO_TPL_PATH = TPL_DIR / "photo.tpl"
 PHOTO_TPL = PHOTO_TPL_PATH.read_text()
 MAIN_TPL_PATH = TPL_DIR / "photography.tpl"
@@ -68,28 +72,6 @@ _KEEP_EXIF_TAGS = {
     Base.LightSource,
 }
 
-# Strip unimportant EXIF tags
-print("Sanitizing EXIF tags using exiftool")
-subprocess.run([
-    "exiftool",
-    "-r",
-    "-overwrite_original",
-    "-all=",
-    "--icc_profile:all",
-    "-tagsFromFile", "@",
-    "-ColorSpaceTags",
-    "-Orientation",
-    "-Make",
-    "-Model",
-    "-DateTimeOriginal",
-    "-ExposureTime",
-    "-FNumber",
-    "-ISO",
-    "-FocalLength",
-    "-LensModel",
-    "photos/",
-], check=True)
-
 html_str_paths = []
 
 seen_ids = set()
@@ -99,7 +81,7 @@ scroll_track_items = []
 photo_preview_styling_items = []
 photo_list_items = []
 photo_preview_items = []
-for fi in ASSETS_DIR.iterdir():
+for fi in tqdm(list(PHOTO_YAML_DIR.iterdir()), desc="Processing photos and HTML files"):
     if fi.suffix != ".yaml":
         continue
 
@@ -108,8 +90,8 @@ for fi in ASSETS_DIR.iterdir():
         raise KeyError(f"duplicate photos with ID {photo_id}")
     seen_ids.add(photo_id)
 
-    photo_jpeg = next(
-        path for path in ASSETS_DIR.glob(f"{photo_id}.*")
+    full_res_path = next(
+        path for path in FULL_RES_DIR.glob(f"{photo_id}.*")
         if path.suffix.lower() in {".jpg", ".jpeg"}
     )
 
@@ -130,8 +112,9 @@ for fi in ASSETS_DIR.iterdir():
 
     # Strip unimportant EXIF tags
     exif_tags = {}
-    with Image.open(photo_jpeg) as img:
+    with Image.open(full_res_path) as img:
         exif = img.getexif()
+        icc_profile = img.info.get("icc_profile")
         for tag, value in list(exif.items()):
             if tag in _KEEP_EXIF_TAGS:
                 exif_tags[tag] = value
@@ -144,14 +127,19 @@ for fi in ASSETS_DIR.iterdir():
             else:
                 del camera_exif[tag]
 
+        # Make high-res photo for display on individual page
+        photo_path = DISPLAY_DIR / f"{photo_id}.jpg"
+        display = img.copy()
+        display.thumbnail((DISPLAY_SIZE_PX, DISPLAY_SIZE_PX))
+        display.save(
+            photo_path,
+            quality=90,
+            icc_profile=icc_profile,
+            exif=exif.tobytes(),
+        )
+
         # Make low-resolution thumbnail for display on main page
         thumb_path = THUMBS_DIR / f"{photo_id}_thumb.jpg"
-        if thumb_path.is_file():
-            print("Overwriting thumbnail for", fi)
-        else:
-            print("Writing thumbnail for", fi)
-        
-        icc_profile = img.info.get("icc_profile")
         img.thumbnail((THUMB_SIZE_PX, THUMB_SIZE_PX))
         img.save(
             thumb_path,
@@ -160,23 +148,33 @@ for fi in ASSETS_DIR.iterdir():
             exif=exif.tobytes(),
         )
 
-    camera = exif_tags.get(Base.Model, camera_yaml)
+    camera_make = exif_tags.get(Base.Make, None)
+    if camera_make:
+        camera_make = camera_make.split(" ")[0]
+    camera_model = exif_tags.get(Base.Model, None)
+    if camera_model:
+        if camera_model.startswith(camera_make):
+            camera = camera_model
+        else:
+            camera = f"{camera_make} {camera_model}"
+    else:
+        camera = camera_yaml
     focal_length = exif_tags.get(Base.FocalLength, focal_length_yaml)
-    if focal_length is not None:
+    if focal_length:
         focal_length = f"{round(focal_length)}mm"
     f_number = exif_tags.get(Base.FNumber, f_number_yaml)
-    if f_number is not None:
+    if f_number:
         f_number = f"<i>f</i>/{f_number}"
     exposure_time = exif_tags.get(Base.ExposureTime, exposure_time_yaml)
-    if exposure_time is not None:
+    if exposure_time:
         exposure_time = f"{Fraction(exposure_time).limit_denominator(50000)}s"
     iso = exif_tags.get(Base.ISOSpeedRatings, iso_yaml)
-    if iso is not None:
+    if iso:
         if isinstance(iso, list):
             iso = iso[0]
         iso = f"ISO {round(iso)}"
     optional_metadata = " &mdash; ".join(
-        m for m in [camera, focal_length, f_number, exposure_time, iso] if m is not None
+        m for m in [camera, focal_length, f_number, exposure_time, iso] if m
     )
 
     # Sort by date
@@ -193,7 +191,7 @@ for fi in ASSETS_DIR.iterdir():
     photo_html = (
         PHOTO_TPL
         .replace(PHOTO_ID_KEY, photo_id)
-        .replace(PHOTO_FILE_KEY, photo_jpeg.name)
+        .replace(PHOTO_FILE_KEY, photo_path.name)
         .replace(TITLE_KEY, title)
         .replace(THUMB_FILE_KEY, thumb_path.name)
         .replace(THUMB_WIDTH_KEY, str(img.width))

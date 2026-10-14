@@ -70,6 +70,7 @@ function update() {
         if (p < 0) {
             photo.style.setProperty("--photo-opacity", 0);
             photo.style.pointerEvents = "none";
+            photo.style.visibility = "hidden";
             return;
         }
 
@@ -110,6 +111,8 @@ function update() {
             rotateZ = pos.rotateZInit;
             scale = interp(scaleInit, 1, p1, easeInCubic)
         }
+
+        photo.style.visibility = "visible";
 
         const opacity = clamp(p / 0.1, 0, 1)
         const frontOpacity = rotateX > -90 ? opacity : 0;

@@ -27,7 +27,7 @@ permalink: /photos/{PHOTO_ID}
 
 <body>
 
-<div class="container photo-large"><img src="assets/{PHOTO_FILE}"/></div>
+<div class="container photo-large"><img src="large/{PHOTO_FILE}"/></div>
 <div class="photo-below">
     <svg 
         class="tree small"
