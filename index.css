@@ -9,7 +9,7 @@
     --colour-academia: #d1ebf8;
     --colour-industry: #cdebd5;
     --colour-grade-school: #ecdebf;
-    --colour-subevent: #ddd;
+    --colour-uncategorized: #bbb;
     --font-main: Tahoma, Arial, sans-serif;
     --font-size-small: 0.875rem;
     --font-size-smaller: 0.8rem;
@@ -440,6 +440,10 @@ main {
 
 .timeline-event.right.small.grade-school, .timeline-event.right.small.link.grade-school {
     background: var(--colour-grade-school);
+}
+
+.timeline-event.right.small.uncategorized, .timeline-event.right.small.link.uncategorized {
+    background: var(--colour-uncategorized);
 }
 
 /* Dynamic elements */
