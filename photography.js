@@ -45,8 +45,8 @@ triggers.forEach((_, index) => {
     pilePositions[index] = {
         xInit: clamp(gaussianRandom(0, 0.1), -0.2, 0.2) - 0.2,
         xFinal: clamp(gaussianRandom(0, 0.15), -0.3, 0.3) - 0.1,
-        yInit: Math.random() * 0.18 + 0.35,
-        yFinal: + Math.random() * 0.005 - 0.54,
+        yInit: Math.random() * 0.13 + 0.27,
+        yFinal: -0.5,
         rotateXFinal: 70,
         rotateZInit: -rotationDir * 1,
         rotateZ: rotationDir * 1,
@@ -61,7 +61,16 @@ const photoStop = 0.8;
 
 function update() {
     const treeRect = document.querySelector('.tree.large').getBoundingClientRect()
-    const treeMinDim = Math.min(treeRect.width, treeRect.height)
+    const pileRect = document.querySelector('.photo-pile').getBoundingClientRect()
+    document.querySelectorAll(".photo img").forEach(img => {
+        const desiredHeight = treeRect.height * 0.41;
+        img.style.maxHeight = `${desiredHeight}px`;
+
+        var desiredWidth = treeRect.width * 0.7;
+        const shaveOff = window.innerWidth - pileRect.left - desiredWidth - 10;
+        if (shaveOff < 0) { desiredWidth += shaveOff; }
+        img.style.maxWidth = `${desiredWidth}px`;
+    });
     triggers.forEach((trigger, index) => {
         const photo = document.getElementById(trigger.dataset.photo);
 
@@ -82,14 +91,15 @@ function update() {
         var x, y, z, rotateX, rotateZ, scale;
 
         const pos = pilePositions[index];
-        const xInit = pos.xInit * treeMinDim;
+        const xInit = pos.xInit * treeRect.width;
         const xPhoto = 0;
-        const xFinal = pos.xFinal * treeMinDim;
-        const yInit = -pos.yInit * treeMinDim;
+        const xFinal = pos.xFinal * treeRect.width;
+        const yInit = -pos.yInit * treeRect.height;
         const yPhoto = 0;
-        const yFinal = -pos.yFinal * treeMinDim;
+        const yFinal = -pos.yFinal * treeRect.height;
 
         if (p3 > 0) {
+            photo.style.transformOrigin = "center top";
             x = interp(xPhoto, xFinal, p3, easeInOutCubic);
             y = interp(yPhoto, yFinal, p3, easeInOutCubic);
             z = interp(0, -20, p3, easeInOutCubic);
@@ -104,6 +114,7 @@ function update() {
             rotateZ = interp(pos.rotateZInit, pos.rotateZ, p2, linear);
             scale = 1
         } else {
+            photo.style.transformOrigin = "center";
             x = interp(xInit, xPhoto, p1, linear);
             y = interp(yInit, yPhoto, p1, easeOutCubic);
             z = 0

@@ -47,7 +47,7 @@ permalink: /photography.html
         <svg 
             class="tree large"
             viewBox="170 180 2140 3210"
-            preserveAspectRatio="xMidYMid meet"
+            preserveAspectRatio="xMidYMin meet"
             style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;"
         >
             <style>
@@ -208,7 +208,7 @@ permalink: /photography.html
             {PHOTO_PILE_ITEMS}
         </div>
 
-        <div class="scroll-hint">&#129095; scroll down &#129095;</div>
+        <div class="scroll-hint">&darr; scroll down &darr;</div>
     </div>
 </div>
 

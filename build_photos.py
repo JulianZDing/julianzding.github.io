@@ -1,18 +1,16 @@
 import random
-import subprocess
 from fractions import Fraction
 from pathlib import Path
 
 import yaml
 from bs4 import BeautifulSoup
-from PIL import Image
+from PIL import Image, ImageOps
 from PIL.ExifTags import IFD, Base
 from tqdm.auto import tqdm
 
 DISPLAY_SIZE_PX = 4000
 THUMB_SIZE_PX = 1000
 
-FULL_RES_DIR = Path("_full_resolution")
 HTML_DIR = Path("photos/html/")
 DISPLAY_DIR = Path("photos/large/")
 THUMBS_DIR = Path("photos/thumb/")
@@ -45,7 +43,7 @@ PHOTO_PREVIEW_STYLING_KEY = r"{PHOTO_PREVIEW_STYLING}"
 PHOTO_LIST_KEY = r"{PHOTO_LIST}"
 PHOTO_PREVIEW_LIST_KEY = r"{PHOTO_PREVIEW_LIST}"
 
-_KEEP_EXIF_TAGS = {
+_EXTRACT_EXIF_TAGS = {
     # Orientation
     Base.Orientation,
 
@@ -81,19 +79,15 @@ scroll_track_items = []
 photo_preview_styling_items = []
 photo_list_items = []
 photo_preview_items = []
-for fi in tqdm(list(PHOTO_YAML_DIR.iterdir()), desc="Processing photos and HTML files"):
-    if fi.suffix != ".yaml":
-        continue
-
+for fi in tqdm(list(PHOTO_YAML_DIR.glob("*.yaml")), desc="Processing photos and HTML files"):
     photo_id = fi.stem
     if photo_id in seen_ids:
         raise KeyError(f"duplicate photos with ID {photo_id}")
     seen_ids.add(photo_id)
 
-    full_res_path = next(
-        path for path in FULL_RES_DIR.glob(f"{photo_id}.*")
-        if path.suffix.lower() in {".jpg", ".jpeg"}
-    )
+    photo_path = DISPLAY_DIR / f"{photo_id}.webp"
+    if not photo_path.is_file():
+        raise KeyError(f"no corresponding photo for {fi}")
 
     with open(fi) as f:
         photo_yaml = yaml.safe_load(f)
@@ -110,42 +104,29 @@ for fi in tqdm(list(PHOTO_YAML_DIR.iterdir()), desc="Processing photos and HTML 
 
     desc_html = "<p>" + "</p>\n<p>".join(description.split("\n\n")) + "</p>"
 
-    # Strip unimportant EXIF tags
+    # Extract important EXIF tags
     exif_tags = {}
-    with Image.open(full_res_path) as img:
+    with Image.open(photo_path) as img:
         exif = img.getexif()
         icc_profile = img.info.get("icc_profile")
         for tag, value in list(exif.items()):
-            if tag in _KEEP_EXIF_TAGS:
+            if tag in _EXTRACT_EXIF_TAGS:
                 exif_tags[tag] = value
-            elif tag != Base.ExifOffset:
-                del exif[tag]
         camera_exif = exif.get_ifd(IFD.Exif)
         for tag, value in list(camera_exif.items()):
-            if tag in _KEEP_EXIF_TAGS:
+            if tag in _EXTRACT_EXIF_TAGS:
                 exif_tags[tag] = value
-            else:
-                del camera_exif[tag]
-
-        # Make high-res photo for display on individual page
-        photo_path = DISPLAY_DIR / f"{photo_id}.jpg"
-        display = img.copy()
-        display.thumbnail((DISPLAY_SIZE_PX, DISPLAY_SIZE_PX))
-        display.save(
-            photo_path,
-            quality=90,
-            icc_profile=icc_profile,
-            exif=exif.tobytes(),
-        )
 
         # Make low-resolution thumbnail for display on main page
-        thumb_path = THUMBS_DIR / f"{photo_id}_thumb.jpg"
+        ImageOps.exif_transpose(img)
+        thumb_path = THUMBS_DIR / f"{photo_id}_thumb.webp"
         img.thumbnail((THUMB_SIZE_PX, THUMB_SIZE_PX))
         img.save(
             thumb_path,
-            quality=85,
+            format="WEBP",
+            quality=80,
+            method=6,
             icc_profile=icc_profile,
-            exif=exif.tobytes(),
         )
 
     camera_make = exif_tags.get(Base.Make, None)
