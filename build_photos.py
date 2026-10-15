@@ -159,7 +159,11 @@ for fi in tqdm(list(PHOTO_YAML_DIR.glob("*.yaml")), desc="Processing photos and 
     )
 
     # Sort by date
-    date_str = exif_tags.get(Base.DateTimeOriginal, date_yaml).split(" ")[0].replace(":", "/")
+    date_str = exif_tags.get(Base.DateTimeOriginal, None)
+    if date_str:
+        date_str = date_str.split(" ")[0].replace(":", "/")
+    else:
+        date_str = date_yaml
     sort_keys.append((date_str, photo_id))
 
     metadata = f"[{date_str}]"
