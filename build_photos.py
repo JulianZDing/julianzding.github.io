@@ -1,5 +1,7 @@
 import random
+import subprocess
 from fractions import Fraction
+from math import isnan
 from pathlib import Path
 
 import yaml
@@ -42,6 +44,28 @@ SCROLL_TRACK_ITEMS_KEY = r"{SCROLL_TRACK_ITEMS}"
 PHOTO_PREVIEW_STYLING_KEY = r"{PHOTO_PREVIEW_STYLING}"
 PHOTO_LIST_KEY = r"{PHOTO_LIST}"
 PHOTO_PREVIEW_LIST_KEY = r"{PHOTO_PREVIEW_LIST}"
+
+# Strip unimportant EXIF tags
+print("Sanitizing EXIF tags using exiftool")
+subprocess.run([
+    "exiftool",
+    "-r",
+    "-overwrite_original",
+    "-all=",
+    "--icc_profile:all",
+    "-tagsFromFile", "@",
+    "-ColorSpaceTags",
+    "-Orientation",
+    "-Make",
+    "-Model",
+    "-DateTimeOriginal",
+    "-ExposureTime",
+    "-FNumber",
+    "-ISO",
+    "-FocalLength",
+    "-LensModel",
+    "photos/",
+], check=True)
 
 _EXTRACT_EXIF_TAGS = {
     # Orientation
@@ -129,6 +153,7 @@ for fi in tqdm(list(PHOTO_YAML_DIR.glob("*.yaml")), desc="Processing photos and 
             icc_profile=icc_profile,
         )
 
+    # Format each metadata field in page description
     camera_make = exif_tags.get(Base.Make, None)
     if camera_make:
         camera_make = camera_make.split(" ")[0]
@@ -140,20 +165,37 @@ for fi in tqdm(list(PHOTO_YAML_DIR.glob("*.yaml")), desc="Processing photos and 
             camera = f"{camera_make} {camera_model}"
     else:
         camera = camera_yaml
-    focal_length = exif_tags.get(Base.FocalLength, focal_length_yaml)
+
+    def _get_numeric_tag(tag, yaml_val):
+        val = exif_tags.get(tag, None)
+        try:
+            val = float(val)
+            if isnan(val):
+                val = None
+        except:
+            val = None
+        # Don't sanitize yaml_val
+        # in case I want to do something silly on purpose
+        return val or yaml_val
+
+    focal_length = _get_numeric_tag(Base.FocalLength, focal_length_yaml)
     if focal_length:
         focal_length = f"{round(focal_length)}mm"
-    f_number = exif_tags.get(Base.FNumber, f_number_yaml)
+
+    f_number = _get_numeric_tag(Base.FNumber, f_number_yaml)
     if f_number:
         f_number = f"<i>f</i>/{f_number}"
-    exposure_time = exif_tags.get(Base.ExposureTime, exposure_time_yaml)
+
+    exposure_time = _get_numeric_tag(Base.ExposureTime, exposure_time_yaml)
     if exposure_time:
         exposure_time = f"{Fraction(exposure_time).limit_denominator(50000)}s"
-    iso = exif_tags.get(Base.ISOSpeedRatings, iso_yaml)
+
+    iso = _get_numeric_tag(Base.ISOSpeedRatings, iso_yaml)
     if iso:
         if isinstance(iso, list):
             iso = iso[0]
         iso = f"ISO {round(iso)}"
+
     optional_metadata = " &mdash; ".join(
         m for m in [camera, focal_length, f_number, exposure_time, iso] if m
     )
@@ -192,7 +234,9 @@ for fi in tqdm(list(PHOTO_YAML_DIR.glob("*.yaml")), desc="Processing photos and 
         rect for rect in tree_svg.find_all("rect")
         if "leaf" in rect.get("class", [])
     ]
-    keep_leaf = random.choice(leaves)
+    # Consistent leaf choice for each photo
+    rng = random.Random(photo_id)
+    keep_leaf = rng.choice(leaves)
     for leaf in leaves:
         if leaf is not keep_leaf:
             leaf.parent.decompose()

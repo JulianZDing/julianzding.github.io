@@ -9,6 +9,12 @@ Dependencies are maintained in `pyproject.toml` and can be installed via `uv syn
 
 Run `python build_photos.py` after adding new photos or changing the descriptions of old ones.
 
+`build_photos.py` requires `exiftool`:
+
+```shell
+sudo apt install libimage-exiftool-perl
+```
+
 ## Local testing
 
 This website uses [Jekyll](https://docs.github.com/en/pages/setting-up-a-github-pages-site-with-jekyll) to render common elements like the page headers.
