@@ -1,3 +1,6 @@
 _site/
+_full_resolution/
 .bundle/
+.venv/
 Gemfile*
+uv.lock
