@@ -31,7 +31,7 @@ permalink: /photography.html
 
 <body>
 
-<div class="page fixed">
+<div class="page fixed main">
     <div class="container">
         <div class="title">a leaf in the breeze</div>
         <p class="desc">

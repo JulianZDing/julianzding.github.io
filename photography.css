@@ -46,6 +46,25 @@ body {
     line-height: 1.35;
 }
 
+.page {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    container-type: inline-size;
+}
+
+.page.noclick {
+    pointer-events: none;
+}
+
+.page.fixed {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    inset: 0;
+    height: 100svh;
+}
+
 .container {
     padding: var(--container-padding);
 }
@@ -70,23 +89,8 @@ body {
 
 /* Main page */
 
-.page {
-    max-width: var(--max-width);
-    margin: 0 auto;
-    container-type: inline-size;
-}
-
-.page.noclick {
-    pointer-events: none;
-}
-
-.page.fixed {
-    position: fixed;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    inset: 0;
-    height: 100%;
+.page.main {
+    max-width: 80svh;
 }
 
 .copyright text {
@@ -175,7 +179,7 @@ body {
 }
 
 .photo-spacer, .photo-trigger {
-    height: 100vh;
+    height: 100svh;
 }
 
 .photo-pile{
@@ -238,11 +242,14 @@ body {
     display: flex;
     flex-direction: row;
     justify-content: center;
+    max-width: 100vw;
+    max-height: 100svh;
 }
 
 .photo-large img {
-    max-width: calc(100vw - 2 * var(--container-padding));
-    max-height: calc(100vh - 2 * var(--container-padding));
+    padding: var(--container-padding);
+    width: 100%;
+    height: 100%;
     box-sizing: border-box;
 }
 
@@ -314,7 +321,7 @@ body {
 .tree.list {
     display: block;
     max-width: 100%;
-    height: 100%;
+    height: 95svh;
 }
 
 .tree.list:not(.copyright) * {
@@ -331,8 +338,10 @@ body {
     grid-area: 1 / 1;
     position: relative;
     display: inline-block;
-    margin-top: min(calc(0.15 * var(--max-width)), 15vh);
-    width: max-content;
+    margin-top: min(calc(0.15 * var(--max-width)), 15svh);
+    width: fit-content;
+    max-width: 100%;
+    min-width: 0;
     z-index: 2;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 16px;
@@ -355,10 +364,10 @@ body {
 .list-photos {
     padding: 0 2rem 0;
     list-style: none;
+    max-width: max(18rem, 45vw);
 }
 
 .list-photos a {
-    padding-left: 2rem;
     color: var(--colour-list-link);
     text-decoration: none;
 }
@@ -369,11 +378,14 @@ body {
 
 .list-photos li {
     position: relative;
+    padding-left: 2rem;
 }
 
 .list-photos li::before {
     content: "";
     position: absolute;
+    left: 0;
+    top: 0;
     width: 1.5rem;
     height: 1.5rem;
     background: url("photos/leaf.svg") center / contain no-repeat;
