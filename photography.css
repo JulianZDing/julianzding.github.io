@@ -7,6 +7,7 @@
     --font-size-smaller: 0.8rem;
     --max-width: 60rem;
     --mobile-tree-list-height: 40svh;
+    --mobile-preview-left-padding: 150px;
     --container-padding: 1.25rem;
     --time-delay-between: 0.7s;
     --time-page-fade: 0.5s;
@@ -419,6 +420,19 @@ body {
     transition: opacity 0.3s ease, visibility 0.3s;
 }
 
+.preview-hint {
+    position: absolute;
+    left: var(--mobile-preview-left-padding);
+    top: 50%;
+    font-family: monospace;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.page:has(.list-photos a:is(:hover, :focus-visible)) .preview-hint{
+    opacity: 0;
+}
+
 @media (max-width: 700px) {
     .page:has(.photos-list) {
         display: grid;
@@ -462,11 +476,15 @@ body {
     }
 
     .photo-preview {
-        left: 150px;
+        left: var(--mobile-preview-left-padding);
         top: 40%;
-        max-width: calc(100% - 150px);
+        max-width: calc(100% - var(--mobile-preview-left-padding) - 2 * var(--container-padding));
         max-height: 50%;
         z-index: 2;
+    }
+
+    .preview-hint {
+        opacity: 1;
     }
 
     .photos-list {

@@ -111,6 +111,8 @@ permalink: /photos.html
             </a>
         </svg>
 
+        <div class="preview-hint">hold briefly to preview</div>
+
         <div class="photo-previews">
             {PHOTO_PREVIEW_LIST}
         </div>
