@@ -40,9 +40,21 @@ function interp(a, b, t, ease) {
 const triggers = document.querySelectorAll('.photo-trigger');
 const pilePositions = [];
 
+// Make photos pile up when they overlap on the ground
+const numBins = 30;
+const leafCount = new Int32Array(numBins);
+
+function getBin(x) {
+    return clamp(
+        Math.floor((x + 0.5) * numBins),
+        0,
+        numBins - 1
+    );
+}
+
 triggers.forEach((_, index) => {
     rotationDir = (index % 2 === 0) ? -1 : 1;
-    pilePositions[index] = {
+    pos = {
         xInit: clamp(gaussianRandom(0, 0.1), -0.2, 0.2) - 0.2,
         xFinal: clamp(gaussianRandom(0, 0.15), -0.3, 0.3) - 0.1,
         yInit: Math.random() * 0.13 + 0.27,
@@ -50,8 +62,12 @@ triggers.forEach((_, index) => {
         rotateXFinal: 70,
         rotateZInit: -rotationDir * 1,
         rotateZ: rotationDir * 1,
-        rotateZFinal: rotationDir * 12 + Math.random() * 10
+        rotateZFinal: rotationDir * 12 + Math.random() * 10,
     };
+    bin = getBin(pos.xFinal)
+    pos.layer = leafCount[bin]
+    leafCount[bin] += 1
+    pilePositions[index] = pos
 });
 
 const scaleInit = 0.1;
@@ -96,7 +112,7 @@ function update() {
         const xFinal = pos.xFinal * treeRect.width;
         const yInit = -pos.yInit * treeRect.height;
         const yPhoto = 0;
-        const yFinal = -pos.yFinal * treeRect.height;
+        const yFinal = -pos.yFinal * treeRect.height - pos.layer * 3;
 
         if (p3 > 0) {
             photo.style.transformOrigin = "center top";
