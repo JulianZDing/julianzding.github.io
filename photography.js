@@ -38,7 +38,7 @@ function interp(a, b, t, ease) {
 }
 
 const triggers = document.querySelectorAll('.photo-trigger');
-const pilePositions = [];
+const photoPositions = [];
 
 // Make photos pile up when they overlap on the ground
 const numBins = 30;
@@ -52,9 +52,14 @@ function getBin(x) {
     );
 }
 
-triggers.forEach((_, index) => {
-    rotationDir = (index % 2 === 0) ? -1 : 1;
-    pos = {
+let layoutVersion = 0;
+triggers.forEach((trigger, index) => {
+    const rotationDir = (index % 2 === 0) ? -1 : 1;
+    const pos = {
+        photo: document.getElementById(trigger.dataset.photo),
+        hidden: null,
+        settled: false,
+        layoutVersion: -1,
         xInit: clamp(gaussianRandom(0, 0.1), -0.2, 0.2) - 0.2,
         xFinal: clamp(gaussianRandom(0, 0.15), -0.3, 0.3) - 0.1,
         yInit: Math.random() * 0.13 + 0.27,
@@ -64,61 +69,101 @@ triggers.forEach((_, index) => {
         rotateZ: rotationDir * 1,
         rotateZFinal: rotationDir * 12 + Math.random() * 10,
     };
-    bin = getBin(pos.xFinal)
+    const bin = getBin(pos.xFinal)
     pos.layer = leafCount[bin]
     leafCount[bin] += 1
-    pilePositions[index] = pos
+    photoPositions[index] = pos
 });
+
+const tree = document.querySelector('.tree.large');
+const pile = document.querySelector('.photo-pile');
+const images = [...document.querySelectorAll('.photo img')];
+
+let treeWidth = 0;
+let treeHeight = 0;
+
+function updateLayout() {
+    const treeRect = tree.getBoundingClientRect();
+    const pileRect = pile.getBoundingClientRect();
+
+    treeWidth = treeRect.width;
+    treeHeight = treeRect.height;
+
+    const desiredHeight = treeHeight * 0.41;
+    const desiredWidth = Math.min(
+        treeWidth * 0.7,
+        window.innerWidth - pileRect.left - 20
+    );
+
+    for (const img of images) {
+        img.style.maxHeight = `${desiredHeight}px`;
+        img.style.maxWidth = `${Math.max(0, desiredWidth)}px`;
+    }
+}
 
 const scaleInit = 0.1;
 const scaleFinal = 0.16;
-const photoStart = 0.2;
+const photoStart = 0.3;
 const photoStop = 0.8;
 
 function update() {
-    const treeRect = document.querySelector('.tree.large').getBoundingClientRect()
-    const pileRect = document.querySelector('.photo-pile').getBoundingClientRect()
-    document.querySelectorAll(".photo img").forEach(img => {
-        const desiredHeight = treeRect.height * 0.41;
-        img.style.maxHeight = `${desiredHeight}px`;
-
-        var desiredWidth = treeRect.width * 0.7;
-        const shaveOff = window.innerWidth - pileRect.left - desiredWidth - 20;
-        if (shaveOff < 0) { desiredWidth += shaveOff; }
-        img.style.maxWidth = `${desiredWidth}px`;
-    });
     triggers.forEach((trigger, index) => {
-        const photo = document.getElementById(trigger.dataset.photo);
+        const pos = photoPositions[index];
 
+        const photo = pos.photo;
         const rect = trigger.getBoundingClientRect();
         const p = 1 - rect.top / window.innerHeight;
         if (p < 0) {
+            if (pos.hidden) return;
+
             photo.style.setProperty("--photo-opacity", 0);
-            photo.style.pointerEvents = "none";
+            photo.style.setProperty("--back-opacity", 0);
             photo.style.visibility = "hidden";
+            pos.hidden = true;
             return;
         }
+        photo.style.visibility = "visible";
+        pos.hidden = false;
 
         const p1 = clamp(p / photoStart, 0, 1);
         const p2 = clamp((p - photoStart) / (photoStop - photoStart), 0, 1);
         const p3 = clamp((p - 0.8) / (1 - photoStop), 0, 1);
-        photo.querySelector('img').style.filter = `grayscale(${p3 * 100}%)`
 
         var x, y, z, rotateX, rotateZ, scale;
 
-        const pos = pilePositions[index];
-        const xInit = pos.xInit * treeRect.width;
+        const xInit = pos.xInit * treeWidth;
         const xPhoto = 0;
-        const xFinal = pos.xFinal * treeRect.width;
-        const yInit = -pos.yInit * treeRect.height;
+        const xFinal = pos.xFinal * treeWidth;
+        const yInit = -pos.yInit * treeHeight;
         const yPhoto = 0;
-        const yFinal = -pos.yFinal * treeRect.height - pos.layer * 3;
+        const yFinal = -pos.yFinal * treeHeight - pos.layer * 4;
+        const zFinal = -20;
+
+        if (p >= 1) {
+            if (pos.settled && pos.layoutVersion === layoutVersion) return;
+            
+            photo.style.setProperty("--photo-opacity", 1);
+            photo.style.setProperty("--back-opacity", 0);
+            photo.style.transformOrigin = "center top";
+            photo.style.transform = `
+                translateX(${xFinal}px)
+                translateY(${yFinal}px)
+                translateZ(${zFinal}px)
+                rotateX(${pos.rotateXFinal}deg)
+                rotateZ(${pos.rotateZFinal}deg)
+                scale(${scaleFinal})
+            `;
+            pos.settled = true;
+            pos.layoutVersion = layoutVersion;
+            return;
+        }
+        pos.settled = false;
 
         if (p3 > 0) {
             photo.style.transformOrigin = "center top";
             x = interp(xPhoto, xFinal, p3, easeInOutCubic);
             y = interp(yPhoto, yFinal, p3, easeInOutCubic);
-            z = interp(0, -20, p3, easeInOutCubic);
+            z = interp(0, zFinal, p3, easeInOutCubic);
             rotateX = interp(0, pos.rotateXFinal, p3, easeInOutCubic);
             rotateZ = interp(pos.rotateZ, pos.rotateZFinal, p3, easeInOutCubic);
             scale = interp(1, scaleFinal, p3, easeInOutCubic)
@@ -158,21 +203,43 @@ function update() {
     });
 }
 
-let ticking = false;
+// Trigger updates as appropriate
+let updateTick = false;
 
 function requestUpdate() {
-    if (!ticking) {
+    if (!updateTick) {
             requestAnimationFrame(() => {
                 update();
-                ticking = false;
+                updateTick = false;
             });
 
-        ticking = true;
+        updateTick = true;
     }
 }
 
+let layoutTick = false;
+
+function requestUpdateLayout() {
+    if (!layoutTick) {
+            requestAnimationFrame(() => {
+                updateLayout();
+                layoutVersion++;
+                layoutTick = false;
+
+                requestUpdate();
+            });
+
+        layoutTick = true;
+    }
+}
+
+const sceneWrapper = document.querySelector(".scene-wrapper");
+const resizeObserver = new ResizeObserver(requestUpdateLayout);
+resizeObserver.observe(sceneWrapper);
 addEventListener('scroll', requestUpdate, { passive: true });
-addEventListener('resize', requestUpdate);
+addEventListener('resize', requestUpdate)
+
+updateLayout();
 update();
 
 // Scroll hint

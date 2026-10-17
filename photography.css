@@ -216,6 +216,7 @@ body {
     transform-style: preserve-3d;
     will-change: transform;
     visibility: hidden;
+    pointer-events: none;
 }
 
 .photo {
@@ -234,7 +235,7 @@ body {
 
 .photo img {
     box-sizing: border-box;
-    border: min(1.2cqh, 2cqw) solid var(--colour-border);
+    border: min(1cqh, 1.5cqw) solid var(--colour-border);
     opacity: var(--photo-opacity, 0);
 }
 
@@ -425,7 +426,7 @@ body {
     height: auto;
     object-fit: contain;
     box-sizing: border-box;
-    border: min(1cqh, 1.75cqw) solid var(--colour-border);
+    border: min(0.7cqh, 1.2cqw) solid var(--colour-border);
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease, visibility 0.3s;
