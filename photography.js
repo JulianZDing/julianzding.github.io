@@ -83,7 +83,7 @@ function update() {
         img.style.maxHeight = `${desiredHeight}px`;
 
         var desiredWidth = treeRect.width * 0.7;
-        const shaveOff = window.innerWidth - pileRect.left - desiredWidth - 10;
+        const shaveOff = window.innerWidth - pileRect.left - desiredWidth - 20;
         if (shaveOff < 0) { desiredWidth += shaveOff; }
         img.style.maxWidth = `${desiredWidth}px`;
     });

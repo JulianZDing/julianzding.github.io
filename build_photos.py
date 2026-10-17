@@ -261,7 +261,7 @@ for fi in tqdm(list(PHOTO_YAML_DIR.glob("*.yaml")), desc="Processing photos and 
         f'.photo-preview[data-photo="{photo_id}"]'
     )
     photo_list_items.append(
-        f'<li><a data-photo="{photo_id}" href="photos/{photo_html_path.name}">{date_str}: {title} ({photo_id})</a></li>'
+        f'<li><a data-photo="{photo_id}" href="photos/{photo_html_path.name}">{date_str}: {title}</a></li>'
     )
     photo_preview_items.append(
         f'<img class="photo-preview" data-photo="{photo_id}" src="{thumb_path}"/>'
