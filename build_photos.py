@@ -117,7 +117,7 @@ for fi in tqdm(list(PHOTO_YAML_DIR.glob("*.yaml")), desc="Processing photos and 
         photo_yaml = yaml.safe_load(f)
 
     title = photo_yaml.get("title", "untitled")
-    date_yaml = photo_yaml.get("date", "-/-/-")
+    date_yaml = photo_yaml.get("date", None)
     camera_yaml = photo_yaml.get("camera", None)
     film_stock = photo_yaml.get("film", None)
     focal_length_yaml = photo_yaml.get("focal_length_mm", None)
@@ -154,29 +154,30 @@ for fi in tqdm(list(PHOTO_YAML_DIR.glob("*.yaml")), desc="Processing photos and 
         )
 
     # Format each metadata field in page description
-    camera_make = exif_tags.get(Base.Make, None)
+    camera_make = camera_yaml or exif_tags.get(Base.Make, None)
     if camera_make:
         camera_make = camera_make.split(" ")[0]
-    camera_model = exif_tags.get(Base.Model, None)
+    camera_model = camera_yaml or exif_tags.get(Base.Model, None)
     if camera_model:
         if camera_model.startswith(camera_make):
             camera = camera_model
         else:
             camera = f"{camera_make} {camera_model}"
-    else:
-        camera = camera_yaml
 
-    def _get_numeric_tag(tag, yaml_val):
+    def _get_numeric_tag(tag, yaml_val, exif_tags=exif_tags):
+        # Don't sanitize yaml_val
+        # in case I want to do something silly on purpose
+        if yaml_val:
+            return yaml_val
+        
         val = exif_tags.get(tag, None)
         try:
             val = float(val)
             if isnan(val):
                 val = None
-        except:
+        except (TypeError, ValueError):
             val = None
-        # Don't sanitize yaml_val
-        # in case I want to do something silly on purpose
-        return val or yaml_val
+        return val
 
     focal_length = _get_numeric_tag(Base.FocalLength, focal_length_yaml)
     if focal_length:
@@ -201,11 +202,14 @@ for fi in tqdm(list(PHOTO_YAML_DIR.glob("*.yaml")), desc="Processing photos and 
     )
 
     # Sort by date
-    date_str = exif_tags.get(Base.DateTimeOriginal, None)
-    if date_str:
-        date_str = date_str.split(" ")[0].replace(":", "/")
-    else:
-        date_str = date_yaml
+    date_exif = exif_tags.get(Base.DateTimeOriginal, None)
+    if date_exif:
+        date_exif = date_exif.split(" ")[0].replace(":", "/")
+    date_str = date_yaml or date_exif
+    if not date_str:
+        raise ValueError(
+            f"No valid date provided for photo ID {photo_id}"
+        )
     sort_keys.append((date_str, photo_id))
 
     metadata = f"[{date_str}]"
