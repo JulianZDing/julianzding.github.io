@@ -105,14 +105,31 @@ const scaleInit = 0.1;
 const scaleFinal = 0.16;
 const photoStart = 0.3;
 const photoStop = 0.8;
+const preloadCount = 5;
 
 function update() {
+    const nextPhotoIndex = [...triggers].findIndex(trigger =>
+        trigger.getBoundingClientRect().top > window.innerHeight
+    );
+    const loadToThisIndex = (
+        (nextPhotoIndex === -1) ? nextPhotoIndex : (nextPhotoIndex + preloadCount)
+    );
+
     triggers.forEach((trigger, index) => {
         const pos = photoPositions[index];
-
         const photo = pos.photo;
+
+        // Pre-load thumbnails up to the next N triggers to enter the viewport
+        if (loadToThisIndex !== -1 && index < loadToThisIndex) {
+            const img = pos.photo.querySelector("img");
+            if (!img.hasAttribute("src")) {
+                img.src = img.dataset.src;
+            }
+        }
+
         const rect = trigger.getBoundingClientRect();
         const p = 1 - rect.top / window.innerHeight;
+
         if (p < 0) {
             if (pos.hidden) return;
 

@@ -252,7 +252,7 @@ for fi in tqdm(list(PHOTO_YAML_DIR.glob("*.yaml")), desc="Processing photos and 
     photo_pile_items.append(
         f'<div id="{photo_id}" class="photo-wrapper">'
         f'<a class="photo" href="photos/{photo_html_path.name}">'
-        f'<img src="{thumb_path}"/>'
+        f'<img data-src="{thumb_path}" width="{img.width}" height="{img.height}" decoding="async"/>'
         '<div class="photo-back"></div>'
         '</a>'
         '</div>'
