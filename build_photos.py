@@ -126,7 +126,9 @@ for fi in tqdm(list(PHOTO_YAML_DIR.glob("*.yaml")), desc="Processing photos and 
     iso_yaml = photo_yaml.get("iso", None)
     description = photo_yaml.get("description", "")
 
-    desc_html = "<p>" + "</p>\n<p>".join(description.split("\n\n")) + "</p>"
+    desc_html = ""
+    if description:
+        desc_html = "<p>" + "</p>\n<p>".join(description.split("\n\n")) + "</p>"
 
     # Extract important EXIF tags
     exif_tags = {}
@@ -189,7 +191,19 @@ for fi in tqdm(list(PHOTO_YAML_DIR.glob("*.yaml")), desc="Processing photos and 
 
     exposure_time = _get_numeric_tag(Base.ExposureTime, exposure_time_yaml)
     if exposure_time:
-        exposure_time = f"{Fraction(exposure_time).limit_denominator(50000)}s"
+        hours, rem = divmod(exposure_time, 3600)
+        minutes, rem = divmod(rem, 60)
+        seconds, fraction = divmod(rem, 1)
+        exposure_elems = []
+        if hours > 0:
+            exposure_elems.append(f"{int(hours)}hr")
+        if minutes > 0:
+            exposure_elems.append(f"{int(minutes)}min")
+        if seconds > 0:
+            exposure_elems.append(f"{round(seconds + fraction, 1)}s")
+        elif fraction > 0:
+            exposure_elems.append(f"{Fraction(fraction).limit_denominator(50000)}s")
+        exposure_time = " ".join(exposure_elems)
 
     iso = _get_numeric_tag(Base.ISOSpeedRatings, iso_yaml)
     if iso:
