@@ -36,7 +36,7 @@ permalink: /photography.html
         <div class="title">a leaf in the breeze</div>
         <p class="desc">
             the moment is a fleeting thing<br>
-            to capture it is like catching autumn leaves
+            to capture it is like chasing autumn leaves
         </p>
         <p class="desc delay">
             it's fun to try.
@@ -165,7 +165,8 @@ permalink: /photography.html
                     <rect class="leaf three" x="0.5" y="0.5" width="33.886" height="45.257" style="fill:rgb(238,238,238);stroke:black;stroke-width:1px;stroke-miterlimit:10;"/>
                 </g>
             </g>
-            <g id="Trunk" transform="matrix(1,0,0,1,124.356225,-124.356225)">
+            </a>
+            <g id="Trunk" role="button" transform="matrix(1,0,0,1,124.356225,-124.356225)">
                 <g transform="matrix(1.115331,-0.268561,0.127181,0.528184,-584.135578,2054.53872)">
                     <path d="M568.57,2555.157L860.632,2795.679L276.507,2795.679L568.57,2555.157Z" style="stroke:rgb(221,221,221);stroke-width:4.64px;"/>
                 </g>
@@ -182,7 +183,11 @@ permalink: /photography.html
                     <path d="M530.868,2354.359L793.385,2784.137L0,2784.137L530.868,2354.359Z" style="stroke:rgb(221,221,221);stroke-width:3.86px;"/>
                 </g>
             </g>
-            </a>
+            <g class="shuffle-hint">
+                <text transform="translate(670 2100) rotate(-32)" text-anchor="start">
+                    Shake the tree!
+                </text>
+            </g>
             <a class="copyright" href="index.html">
                 <text transform="translate(480 3070) rotate(-77)" text-anchor="start">
                     &copy; {{ site.time | date: "%Y" }} Julian Ding

@@ -159,7 +159,8 @@ body {
     height: 100%;
 }
 
-.tree.large .leaf {
+.tree.large .leaf,
+.tree.large #Trunk {
     pointer-events: visiblePainted;
     cursor: pointer;
 }
@@ -167,6 +168,42 @@ body {
 .tree.large:has(.leaf:hover) #Canopy,
 .tree.large:has(.leaf:hover) #Trunk {
     filter: invert(1);
+}
+
+.tree.large:has(.leaf:hover) .shuffle-hint.visible{
+    opacity: 0;
+}
+
+.shuffle-hint {
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    pointer-events: none;
+    transition: opacity 1s ease, scale 0.2s ease;
+}
+
+.shuffle-hint.visible {
+    opacity: 1;
+}
+
+.shuffle-hint text {
+    fill: var(--colour-text);
+    font-family: monospace;
+    font-size: 35px;
+}
+
+@keyframes wiggle {
+    from {
+        transform: rotate(-5deg);
+    }
+    to {
+        transform: rotate(5deg);
+    }
+}
+
+.tree.large:has(#Trunk:hover) .shuffle-hint {
+    animation: wiggle 0.2s ease-in-out infinite alternate;
+    scale: 1.2;
 }
 
 /* Scrolling photo cards */
@@ -447,7 +484,7 @@ body {
     transition: opacity 0.3s ease;
 }
 
-.page:has(.list-photos a:is(:hover, :focus-visible)) .preview-hint{
+.page:has(.list-photos a:hover) .preview-hint{
     opacity: 0;
 }
 

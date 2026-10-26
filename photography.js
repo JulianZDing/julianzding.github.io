@@ -1,4 +1,4 @@
-// Animations for falling leaves
+// Animations for falling photographs
 
 function gaussianRandom(mean, stddev) {
     let u = 0;
@@ -37,12 +37,10 @@ function interp(a, b, t, ease) {
     return a + (b - a) * ease(t);
 }
 
-const triggers = document.querySelectorAll('.photo-trigger');
-const photoPositions = [];
+let triggers = [...document.querySelectorAll(".photo-trigger")];
 
 // Make photos pile up when they overlap on the ground
 const numBins = 30;
-const leafCount = new Int32Array(numBins);
 
 function getBin(x) {
     return clamp(
@@ -52,33 +50,37 @@ function getBin(x) {
     );
 }
 
+function generatePile() {
+    const leafCount = new Uint16Array(numBins);
+    triggers.forEach((trigger, index) => {
+        const rotationDir = (index % 2 === 0) ? -1 : 1;
+        const pos = {
+            hidden: null,
+            settled: false,
+            layoutVersion: -1,
+            xInit: clamp(gaussianRandom(0, 0.1), -0.2, 0.2) - 0.2,
+            xFinal: clamp(gaussianRandom(0, 0.15), -0.3, 0.3) - 0.1,
+            yInit: Math.random() * 0.13 + 0.27,
+            yFinal: -0.5,
+            rotateXFinal: 70,
+            rotateZInit: -rotationDir * 1,
+            rotateZ: rotationDir * 1,
+            rotateZFinal: rotationDir * 12 + Math.random() * 10,
+        };
+        const bin = getBin(pos.xFinal);
+        pos.layer = leafCount[bin];
+        leafCount[bin]++;
+
+        trigger.photoPosition = pos;
+        trigger.photo = document.getElementById(trigger.dataset.photo);
+    });
+}
+
+const tree = document.querySelector(".tree.large");
+const pile = document.querySelector(".photo-pile");
+const images = [...document.querySelectorAll(".photo img")];
+
 let layoutVersion = 0;
-triggers.forEach((trigger, index) => {
-    const rotationDir = (index % 2 === 0) ? -1 : 1;
-    const pos = {
-        photo: document.getElementById(trigger.dataset.photo),
-        hidden: null,
-        settled: false,
-        layoutVersion: -1,
-        xInit: clamp(gaussianRandom(0, 0.1), -0.2, 0.2) - 0.2,
-        xFinal: clamp(gaussianRandom(0, 0.15), -0.3, 0.3) - 0.1,
-        yInit: Math.random() * 0.13 + 0.27,
-        yFinal: -0.5,
-        rotateXFinal: 70,
-        rotateZInit: -rotationDir * 1,
-        rotateZ: rotationDir * 1,
-        rotateZFinal: rotationDir * 12 + Math.random() * 10,
-    };
-    const bin = getBin(pos.xFinal)
-    pos.layer = leafCount[bin]
-    leafCount[bin] += 1
-    photoPositions[index] = pos
-});
-
-const tree = document.querySelector('.tree.large');
-const pile = document.querySelector('.photo-pile');
-const images = [...document.querySelectorAll('.photo img')];
-
 let treeWidth = 0;
 let treeHeight = 0;
 
@@ -101,34 +103,39 @@ function updateLayout() {
     }
 }
 
+function calculateProgress(trigger) {
+    const rect = trigger.getBoundingClientRect();
+    return 1 - rect.top / window.innerHeight;
+}
+
 const scaleInit = 0.1;
 const scaleFinal = 0.16;
 const photoStart = 0.3;
 const photoStop = 0.8;
 const preloadCount = 5;
 
+let currentPhotoIndex = 0;
+
 function update() {
-    const nextPhotoIndex = [...triggers].findIndex(trigger =>
-        trigger.getBoundingClientRect().top > window.innerHeight
-    );
-    const loadToThisIndex = (
-        (nextPhotoIndex === -1) ? nextPhotoIndex : (nextPhotoIndex + preloadCount)
-    );
+    currentPhotoIndex = triggers.findIndex(trigger => {
+        const p = calculateProgress(trigger);
+        return p >= 0 && p < 1;
+    });
+    const loadToThisIndex = currentPhotoIndex + preloadCount + 1;
 
     triggers.forEach((trigger, index) => {
-        const pos = photoPositions[index];
-        const photo = pos.photo;
+        const pos = trigger.photoPosition;
+        const photo = trigger.photo;
 
         // Pre-load thumbnails up to the next N triggers to enter the viewport
-        if (loadToThisIndex !== -1 && index < loadToThisIndex) {
-            const img = pos.photo.querySelector("img");
+        if (currentPhotoIndex === -1 || index < loadToThisIndex) {
+            const img = photo.querySelector("img");
             if (!img.hasAttribute("src")) {
                 img.src = img.dataset.src;
             }
         }
 
-        const rect = trigger.getBoundingClientRect();
-        const p = 1 - rect.top / window.innerHeight;
+        const p = calculateProgress(trigger);
 
         if (p < 0) {
             if (pos.hidden) return;
@@ -144,7 +151,7 @@ function update() {
 
         const p1 = clamp(p / photoStart, 0, 1);
         const p2 = clamp((p - photoStart) / (photoStop - photoStart), 0, 1);
-        const p3 = clamp((p - 0.8) / (1 - photoStop), 0, 1);
+        const p3 = clamp((p - photoStop) / (1 - photoStop), 0, 1);
 
         var x, y, z, rotateX, rotateZ, scale;
 
@@ -198,15 +205,13 @@ function update() {
             z = 0
             rotateX = interp(-180, 0, p1, linear);
             rotateZ = pos.rotateZInit;
-            scale = interp(scaleInit, 1, p1, easeInCubic)
+            scale = interp(scaleInit, 1, p1, easeInCubic);
         }
-
-        photo.style.visibility = "visible";
 
         const opacity = clamp(p / 0.1, 0, 1)
         const frontOpacity = rotateX > -90 ? opacity : 0;
         photo.style.setProperty("--photo-opacity", frontOpacity);
-        const backOpacity  = rotateX <= -90 ? opacity : 0;
+        const backOpacity = rotateX <= -90 ? opacity : 0;
         photo.style.setProperty("--back-opacity", backOpacity);
 
         photo.style.transform = `
@@ -253,33 +258,75 @@ function requestUpdateLayout() {
 const sceneWrapper = document.querySelector(".scene-wrapper");
 const resizeObserver = new ResizeObserver(requestUpdateLayout);
 resizeObserver.observe(sceneWrapper);
-addEventListener('scroll', requestUpdate, { passive: true });
-addEventListener('resize', requestUpdate)
+addEventListener("scroll", requestUpdate, { passive: true });
+addEventListener("resize", requestUpdate)
 
+generatePile();
 updateLayout();
 update();
 
-// Scroll hint
+// Handle photo shuffling
 
-const scrollHint = document.querySelector(".scroll-hint");
+let swapCandidates = [];
+let swapVersion = -1;
 
-if (scrollHint) {
-    let hasScrolled = window.scrollY > 0;
+function swapCurrentPhoto() {
+    const n = triggers.length;
+    const i = currentPhotoIndex;
 
-    const hintTimer = setTimeout(() => {
-        if (!hasScrolled) {
-            scrollHint.classList.add("visible");
-        }
-    }, 10000);
+    if (i < 0 || i >= n - 1) return;
 
-    function dismissHint() {
-        hasScrolled = true;
-        clearTimeout(hintTimer);
-        scrollHint.classList.remove("visible");
+    // Collect all unseen photos ahead of current scroll position
+    if (swapVersion !== i || swapCandidates.length === 0) {
+        swapVersion = i;
+        swapCandidates = triggers.slice(i + 1).map(trigger => trigger.photo);
     }
 
-    window.addEventListener("scroll", dismissHint, {
-        passive: true,
-        once: true
-    });
+    // Swap one random photo from unseen list
+    const k = Math.floor(Math.random() * swapCandidates.length);
+    const selectedPhoto = swapCandidates.splice(k, 1)[0];
+
+    const a = triggers[i];
+    const b = triggers.slice(i + 1).find(trigger =>
+        trigger.photo === selectedPhoto
+    );
+
+    [a.photo, b.photo] = [b.photo, a.photo];
+
+    // Reset cached state of swapped triggers
+    for (const trigger of [a, b]) {
+        trigger.photoPosition.hidden = null;
+        trigger.photoPosition.settled = false;
+    }
+
+    requestUpdate();
 }
+
+const trunk = document.querySelector(".tree.large #Trunk");
+trunk.addEventListener("click", swapCurrentPhoto);
+
+// Delayed hints
+
+const scrollHint = document.querySelector(".scroll-hint");
+const shuffleHint = document.querySelector(".shuffle-hint");
+
+let hasScrolled = window.scrollY > 0;
+
+const hintTimer = setTimeout(() => {
+    if (!hasScrolled) {
+        scrollHint.classList.add("visible");
+    }
+}, 7000);
+
+function dismissHint() {
+    hasScrolled = true;
+    clearTimeout(hintTimer);
+    scrollHint?.classList.remove("visible");
+    // Show shuffle hint only after the user has scrolled
+    setTimeout(() => shuffleHint?.classList.add("visible"), 5000);
+}
+
+window.addEventListener("scroll", dismissHint, {
+    passive: true,
+    once: true
+});
