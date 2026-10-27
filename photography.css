@@ -274,12 +274,25 @@ body {
     display: block;
     width: auto;
     height: auto;
-    max-width: 100%;
     object-fit: contain;
-    box-sizing: border-box;
+    box-sizing: content-box;
     background: var(--colour-border);
     border: min(1cqh, 1.5cqw) solid var(--colour-border);
     opacity: var(--photo-opacity, 0);
+}
+
+.photo::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--colour-border);
+    opacity: 1;
+    pointer-events: none;
+    transition: opacity 0.5s ease-in;
+}
+
+.photo:has(img.loaded)::after {
+    opacity: 0;
 }
 
 .photo-back {

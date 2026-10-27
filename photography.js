@@ -92,14 +92,26 @@ function updateLayout() {
     treeHeight = treeRect.height;
 
     const desiredHeight = treeHeight * 0.41;
-    const desiredWidth = Math.min(
-        treeWidth * 0.7,
-        window.innerWidth - pileRect.left - 20
+    const desiredWidth = Math.max(
+        0,
+        Math.min(
+            treeWidth * 0.7,
+            window.innerWidth - pileRect.left - 30
+        )
     );
 
     for (const img of images) {
-        img.style.maxHeight = `${desiredHeight}px`;
-        img.style.maxWidth = `${Math.max(0, desiredWidth)}px`;
+        const imgWidth = Number(img.getAttribute("width"));
+        const imgHeight = Number(img.getAttribute("height"));
+
+        const desiredScale = Math.min(
+            desiredWidth / imgWidth,
+            desiredHeight / imgHeight,
+            1
+        );
+
+        img.style.width = `${imgWidth * desiredScale}px`;
+        img.style.height = `${imgHeight * desiredScale}px`;
     }
 }
 
@@ -131,6 +143,10 @@ function update() {
         if (currentPhotoIndex === -1 || index < loadToThisIndex) {
             const img = photo.querySelector("img");
             if (!img.hasAttribute("src")) {
+                img.addEventListener("load", () => {
+                    img.classList.add("loaded");
+                }, { once: true });
+
                 img.src = img.dataset.src;
             }
         }
@@ -160,7 +176,7 @@ function update() {
         const xFinal = pos.xFinal * treeWidth;
         const yInit = -pos.yInit * treeHeight;
         const yPhoto = 0;
-        const yFinal = -pos.yFinal * treeHeight - pos.layer * 4;
+        const yFinal = -pos.yFinal * treeHeight - pos.layer * treeHeight * 0.005;
         const zFinal = -20;
 
         if (p >= 1) {
@@ -298,6 +314,17 @@ function swapCurrentPhoto() {
         trigger.photoPosition.hidden = null;
         trigger.photoPosition.settled = false;
     }
+
+    // Center the current photograph's scroll progress
+    const targetScrollY =
+        window.scrollY
+        + a.getBoundingClientRect().top
+        - window.innerHeight * 0.5;
+
+    window.scrollTo({
+        top: targetScrollY,
+        behavior: "smooth"
+    });
 
     requestUpdate();
 }
