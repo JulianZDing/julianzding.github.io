@@ -286,7 +286,7 @@ body {
     position: absolute;
     inset: 0;
     background: var(--colour-border);
-    opacity: 1;
+    opacity: var(--photo-opacity, 0);
     pointer-events: none;
     transition: opacity 0.5s ease-in;
 }
