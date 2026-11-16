@@ -1,0 +1,27 @@
+title: aerochrome yellow
+film: Full-spectrum conversion (535nm filter + channel swap)
+description: |
+  Kodak Aerochrome is a legendary near-infrared film with surreal false colours.
+  Unfortunately, it was discontinued in 2009, and the limited remaining supply is getting <em>incredibly</em> expensive.
+  But what if I could make unlimited Aerochrome-like photos using my full-spectrum-modded digital camera?
+
+  Aerochrome's signature palette is red foliage and deep purple skies.
+  It achieves this by mapping near-infrared in the scene to the red colour channel,
+  actual red in the scene to the green colour channel,
+  and green in the scene to the blue channel,
+  meaning it takes more than just a simple colour filter to achieve the Aerochrome effect.
+  However, it turns out that the right long-pass filter on a full-spectrum camera coupled with some channel tweaks in post is enough to replicate the colour shifts in a digital medium.
+
+  I started out with an orange filter, but that removed too much of the green colour information and made everything severely magenta-tinged.
+  I tried again with a 535nm yellow filter, and this time I was able to get a pretty convincing result in bright sunlight.
+  In the off chance you also have a full-spectrum digital camera and you want to try this for yourself,
+  here are my Darktable color calibration module settings to get you started:
+  <ul>
+    <li>CAT adaptation: bypass</li>
+    <li>R: input B +2.000</li>
+    <li>G: input R +0.050, input B -0.100</li>
+    <li>B: input G +0.400, input B -0.900.</li>
+  </ul>
+  I also needed to bump up the exposure by about 2 stops.
+  You might be able to get better results with a slightly shorter-wavelength filter to let through even more green (500-510nm ish),
+  but personally I think I'm done buying filters for a while.
